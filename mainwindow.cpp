@@ -42,9 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //open in file browser
     connect(ui->pushButton_openFolder, SIGNAL(clicked()), this, SLOT(openFolder()));
     
+    //read last window position from registry
     readPositionSettings();
     
-    //if the program was opened via "open with" by the OS extract the image path from the arguments
+    //if the program was opened via "open with" by the OS, extract the image path from the arguments
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 1) {
         imageHandler->loadImage(QUrl::fromLocalFile(args.at(1)));
@@ -84,15 +85,11 @@ void MainWindow::displayImageInfo(QImage image, QUrl imageUrl) {
     qint64 sizeBytes = fileInfo.size();
     double sizeKilobytes = (double)sizeBytes / 1024.0;
     
-    QString infoText;
-    infoText.append(imageUrl.toLocalFile());
-    infoText.append("   ");
-    infoText.append(QString::number(image.width()));
-    infoText.append(" x ");
-    infoText.append(QString::number(image.height()));
-    infoText.append("   (" + QString::number(sizeKilobytes) + " kB)");
+    ui->label_path->setText(imageUrl.toLocalFile());
+    ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()));
+    ui->label_fileSize->setText(QString::number(sizeKilobytes) + " kB");
     
-    ui->label_imageInfo->setText(infoText);
+    ui->label_path->adjustSize();
 }
 
 void MainWindow::zoom(bool forward) {
