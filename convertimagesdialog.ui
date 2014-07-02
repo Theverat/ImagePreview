@@ -51,13 +51,18 @@ color: #fff;</string>
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(88, 88, 88);
-color: rgb(255, 255, 255);
+        <string notr="true">color: rgb(255, 255, 255);
+
+background-color: qlineargradient(
+x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #333, stop: 1 #444);
 
 border-style: inset;
 border-width: 1px;
 border-color: rgb(74, 127, 227);
-border-radius: 3px;</string>
+border-radius: 3px;
+
+</string>
        </property>
        <property name="text">
         <string>_converted</string>
@@ -86,7 +91,9 @@ border-radius: 3px;</string>
        </property>
        <property name="styleSheet">
         <string notr="true">QComboBox {
-background-color: rgb(88, 88, 88);
+background-color: qlineargradient(
+	x1: 0, y1: 0, x2: 0, y2: 1,
+	stop: 0 #333, stop: 1 #444);
 color: rgb(255, 255, 255);
 
 border-style: inset;
@@ -140,15 +147,8 @@ QComboBox::down-arrow {
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_jpgQuality">
-       <property name="text">
-        <string>JPG Quality:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
       <widget class="QSpinBox" name="spinBox_jpgQuality">
        <property name="styleSheet">
         <string notr="true">QSpinBox {
@@ -156,6 +156,10 @@ QComboBox::down-arrow {
 border-width: 1px;
 border-color: rgb(74, 127, 227);
 border-radius: 3px;
+
+background-color: qlineargradient(
+	x1: 0, y1: 0, x2: 0, y2: 1,
+	stop: 0 #333, stop: 1 #444);
  }
 
 QSpinBox::up-arrow {
@@ -177,22 +181,91 @@ QSpinBox::down-arrow {
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_jpgQuality">
+       <property name="text">
+        <string>JPG Quality:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QProgressBar" name="progressBar">
+       <property name="styleSheet">
+        <string notr="true">QProgressBar {
+    border: 1px solid  rgb(74, 127, 227);
+    border-radius: 4px;
+	text-align: center;
+	background-color: qlineargradient(
+	x1: 0, y1: 0, x2: 0, y2: 1,
+	stop: 0 #262626, stop: 1 #373737);
+ }
+
+ QProgressBar::chunk {
+	
+	background-color: rgb(51, 96, 191);
+    width: 20px;
+ }</string>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="textVisible">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" rowspan="2">
       <widget class="QPushButton" name="pushButton_convert">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="autoFillBackground">
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(88, 88, 88);
+        <string notr="true">QPushButton {
+
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #a6a6a6, stop: 0.08 #7f7f7f,
+stop: 0.39999 #717171, stop: 0.4 #626262,
+stop: 0.9 #4c4c4c, stop: 1 #333333);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #888, stop: 1 #222);
+*/
 
 border: 1px solid;
 border-color: rgb(74, 127, 227);
 border-radius: 3px;
 
-height: 16px;</string>
+height: 16px;
+}
+
+QPushButton::hover {
+
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #a6a6a6, stop: 0.08 #7f7f7f,
+stop: 0.39999 #68717b, stop: 0.4 #4a5e75,
+stop: 0.9 #4c4c4c, stop: 1 #333333);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
+*/
+
+}</string>
        </property>
        <property name="text">
         <string>Convert</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -201,31 +274,14 @@ height: 16px;</string>
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QProgressBar" name="progressBar">
-     <property name="styleSheet">
-      <string notr="true">QProgressBar {
-    border: 1px solid  rgb(74, 127, 227);
-    border-radius: 4px;
-	text-align: center;
- }
-
- QProgressBar::chunk {
-	
-	background-color: rgb(51, 96, 191);
-    width: 20px;
- }</string>
-     </property>
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_nameSuffix</tabstop>
+  <tabstop>comboBox_format</tabstop>
+  <tabstop>spinBox_jpgQuality</tabstop>
+  <tabstop>pushButton_convert</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

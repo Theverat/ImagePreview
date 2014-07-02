@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QKeyEvent>
 #include <QFileDialog>
+#include <QGraphicsItem>
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     GraphicsScene *scene = new GraphicsScene();
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(QBrush(Qt::black));
-    ui->graphicsView->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+    //ui->graphicsView->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
     ui->graphicsView->setAcceptDrops(true);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
     

@@ -38,7 +38,8 @@ bool ImageHandler::load(QUrl url){
     
     //display the image in the graphicsview
     scene->clear();
-    scene->addPixmap(QPixmap::fromImage(image));
+    QGraphicsPixmapItem *item = scene->addPixmap(QPixmap::fromImage(image));
+    item->setTransformationMode(Qt::SmoothTransformation);
     
     //tell the mainwindow the image was loaded
     emit imageLoaded();
