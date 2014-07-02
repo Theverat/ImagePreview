@@ -7,7 +7,7 @@ A lightweight, un-cluttered image preview application
 - Good image comparison capabilities: when switching between zooomed-in areas of images, the zoom is not reset
 
 <h4>Todo</h4>
-- <b>(done></b> better antialiasing for scaled down images available in QGraphicsView? (For photos it works good, but not for uniform patterns) <b>this helped me a lot: http://qt-project.org/forums/viewthread/13643</b>
+- <b>(done)</b> better antialiasing for scaled down images available in QGraphicsView? (For photos it works good, but not for uniform patterns) <b>this helped me a lot: http://qt-project.org/forums/viewthread/13643</b>
 - Fullscreen mode
 
 ![screenshot](http://www.blendpolis.de/download/file.php?id=93798&mode=view)
