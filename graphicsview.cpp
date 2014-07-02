@@ -42,6 +42,11 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
         if(QApplication::keyboardModifiers() & Qt::ControlModifier) {
             emit controlSPressed();
         }
+    case Qt::Key_C:
+        //test if control is pressed as well
+        if(QApplication::keyboardModifiers() & Qt::ControlModifier) {
+            emit controlCPressed();
+        }
     }
 }
 

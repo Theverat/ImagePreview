@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "graphicsscene.h"
+#include "convertimagesdialog.h"
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QSettings>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //keyboard shortcuts
     connect(ui->graphicsView, SIGNAL(keyLeftPressed()), imageHandler, SLOT(previous()));
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
-    connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(saveImage()));
+    connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
+    connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
     //zoom in/out, reset view, fit in view
     connect(ui->graphicsView, SIGNAL(mouseWheelZoom(bool)), this, SLOT(zoom(bool)));
     connect(ui->graphicsView, SIGNAL(rightClick()), this, SLOT(resetZoom()));
@@ -67,6 +71,7 @@ void MainWindow::initImageLoaded() {
         fitInView();
         if(image.width() < ui->graphicsView->width() && image.height() < ui->graphicsView->height()) {
             resetZoom();
+            zoomed = false;
         }
     }
     
@@ -135,6 +140,19 @@ void MainWindow::openFolder() {
     
     if(folderUrl.isValid())
         QDesktopServices::openUrl(folderUrl);
+}
+
+void MainWindow::convertImages() {
+    QList<QUrl> urls = QFileDialog::getOpenFileUrls(this,
+                                                     "Select Images to Convert",
+                                                     imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename),
+                                                     "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
+    
+    if(urls.size() == 0)
+        return;
+    
+    ConvertImagesDialog *dialog = new ConvertImagesDialog(this, imageHandler, urls);
+    dialog->show();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {

@@ -37,6 +37,7 @@ private slots:
     void fitInView();
     void zoom(bool forward);
     void openFolder();
+    void convertImages();
 };
 
 #endif // MAINWINDOW_H

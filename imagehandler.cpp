@@ -7,6 +7,8 @@
 #include <iostream>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QPushButton>
+#include "convertimagesdialog.h"
 
 ImageHandler::ImageHandler() {
     
@@ -57,8 +59,8 @@ void ImageHandler::previous(){
 void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
     QStringList images = getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename));
     
-    //if there are no images, do nothing
-    if(images.size() == 0)
+    //if there are no images or just one, do nothing
+    if(images.size() < 2)
         return;
     
     QFileInfo fileInfo(imageUrl.toLocalFile());
@@ -103,7 +105,12 @@ QUrl ImageHandler::getImageUrl() {
     return imageUrl;
 }
 
-void ImageHandler::saveImage() {
+void ImageHandler::save(QString path, int quality) {
+    if(!image.save(path, 0, quality))
+        QMessageBox::information(0, "Error while saving Image", "Image not saved!");
+}
+
+void ImageHandler::save() {
     QUrl url = QFileDialog::getSaveFileUrl(0,
                                            "Save as",
                                            imageUrl,
@@ -128,7 +135,9 @@ void ImageHandler::saveImage() {
             quality = 98;
     }
     
-    //check if maps where generated, if yes, check if it could be saved
-    if(!image.save(path, 0, quality))
-        QMessageBox::information(0, "Error while saving Image", "Image not saved!");
+    save(path, quality);
+}
+
+void ImageHandler::convertMultiple() {
+    
 }

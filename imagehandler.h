@@ -17,6 +17,7 @@ public:
     bool load(QUrl url);
     QImage getImage();
     QUrl getImageUrl();
+    void save(QString path, int quality = -1);
 
 private:
     GraphicsScene *scene;
@@ -30,7 +31,8 @@ public slots:
     void loadImage(QUrl url);
     void next();
     void previous();
-    void saveImage();
+    void save();
+    void convertMultiple();
     
 signals:
     void imageLoaded();

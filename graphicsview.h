@@ -28,6 +28,7 @@ signals:
     void rightClick();
     void middleClick();
     void controlSPressed();
+    void controlCPressed();
 };
 
 #endif // GRAPHICSVIEW_H

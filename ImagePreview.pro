@@ -16,11 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     graphicsscene.cpp \
     graphicsview.cpp \
-    imagehandler.cpp
+    imagehandler.cpp \
+    convertimagesdialog.cpp
 
 HEADERS  += mainwindow.h \
     graphicsscene.h \
     graphicsview.h \
-    imagehandler.h
+    imagehandler.h \
+    convertimagesdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    convertimagesdialog.ui
