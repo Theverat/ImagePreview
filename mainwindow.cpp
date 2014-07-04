@@ -9,13 +9,12 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QGraphicsItem>
+
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    fittedInView(false),
-    zoomed(false)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     
@@ -28,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
     
     //initialize imageHandler
-    imageHandler = new ImageHandler(scene);
+    imageHandler = new ImageHandler(ui->graphicsView);
     
     //connect signals/slots
     //graphicsview drag and drop
@@ -38,12 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
     connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
-    //zoom in/out, reset view, fit in view
-    connect(ui->graphicsView, SIGNAL(mouseWheelZoom(bool)), this, SLOT(zoom(bool)));
-    connect(ui->graphicsView, SIGNAL(rightClick()), this, SLOT(resetZoom()));
-    connect(ui->graphicsView, SIGNAL(middleClick()), this, SLOT(fitInView()));
-    //display image info, fit image into view etc.
+    //display image info, update scale factor display 
     connect(imageHandler, SIGNAL(imageLoaded()), this, SLOT(initImageLoaded()));
+    connect(ui->graphicsView, SIGNAL(scaleChanged(double)), this, SLOT(displayImageInfo()));
     //open in file browser
     connect(ui->pushButton_openFolder, SIGNAL(clicked()), this, SLOT(openFolder()));
     
@@ -67,16 +63,8 @@ void MainWindow::initImageLoaded() {
     QImage image = imageHandler->getImage();
     QUrl imageUrl = imageHandler->getImageUrl();
     
-    //set initial zoom, fit image into window if it is too large
-    if(!zoomed) {
-        fitInView();
-        if(image.width() < ui->graphicsView->width() && image.height() < ui->graphicsView->height()) {
-            resetZoom();
-            zoomed = false;
-        }
-    }
-    
-    displayImageInfo(image, imageUrl);
+    //determineZoom();
+    displayImageInfo();
     
     //use loaded image as application icon
     QIcon icon(QPixmap::fromImage(image.scaled(64, 64, Qt::KeepAspectRatio)));
@@ -86,54 +74,20 @@ void MainWindow::initImageLoaded() {
 }
 
 //creates the info text for the label and displays it
-void MainWindow::displayImageInfo(QImage image, QUrl imageUrl) {
+void MainWindow::displayImageInfo() {
+    QImage image = imageHandler->getImage();
+    QUrl imageUrl = imageHandler->getImageUrl();
+    
     QFileInfo fileInfo(imageUrl.toLocalFile());
     qint64 sizeBytes = fileInfo.size();
     double sizeKilobytes = (double)sizeBytes / 1024.0;
     
     ui->label_path->setText(imageUrl.toLocalFile());
     ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()));
-    ui->label_fileSize->setText(QString::number(sizeKilobytes) + " kB");
+    ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
+    ui->label_scale->setText(QString::number(ui->graphicsView->getScaleFactor() * 100.0) + "%");
     
     ui->label_path->adjustSize();
-}
-
-void MainWindow::zoom(bool forward) {
-    if(forward) {
-        zoomIn();
-    }
-    else {
-        zoomOut();
-    }
-}
-
-void MainWindow::zoomIn() {
-    ui->graphicsView->scale(1.2, 1.2);
-    fittedInView = false;
-    zoomed = true;
-}
-
-void MainWindow::zoomOut() {
-    ui->graphicsView->scale(0.8, 0.8);
-    fittedInView = false;
-    zoomed = true;
-}
-
-//resets zoom to 1:1
-void MainWindow::resetZoom() {
-    ui->graphicsView->resetTransform();
-    fittedInView = false;
-    zoomed = true;
-}
-
-//fits the preview into the graphicsView
-void MainWindow::fitInView() {
-    QImage image = imageHandler->getImage();
-    ui->graphicsView->scene()->setSceneRect(QRectF(0, 0, image.width(), image.height()));
-    ui->graphicsView->setSceneRect(ui->graphicsView->scene()->sceneRect());
-    ui->graphicsView->fitInView(ui->graphicsView->scene()->sceneRect(), Qt::KeepAspectRatio);
-    fittedInView = true;
-    zoomed = false;
 }
 
 void MainWindow::openFolder() {
@@ -157,8 +111,7 @@ void MainWindow::convertImages() {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    if(fittedInView)
-        fitInView();
+    //determineZoom();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

@@ -22,20 +22,13 @@ private:
     Ui::MainWindow *ui;
     QImage currentImage;
     ImageHandler *imageHandler;
-    bool fittedInView;
-    bool zoomed;
     
-    void displayImageInfo(QImage image, QUrl imageUrl);
     void writePositionSettings();
     void readPositionSettings();
     
 private slots:
     void initImageLoaded();
-    void zoomIn();
-    void zoomOut();
-    void resetZoom();
-    void fitInView();
-    void zoom(bool forward);
+    void displayImageInfo();
     void openFolder();
     void convertImages();
 };

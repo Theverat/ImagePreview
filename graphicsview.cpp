@@ -2,13 +2,44 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <QApplication>
+#include <QGraphicsPixmapItem>
 
-GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent) : QGraphicsView(scene, parent)
+#include <math.h>
+
+GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent) : 
+    QGraphicsView(scene, parent)
 {
+    init();
 }
 
-GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
+GraphicsView::GraphicsView(QWidget *parent) : 
+    QGraphicsView(parent)
 {
+    init();
+}
+
+void GraphicsView::init() {
+    wheelPosition = 40.0;
+    scaleFactor = 1.0;
+    currentImage = new QGraphicsPixmapItem();
+    prevImageWidth = 0;
+    prevImageHeight = 0;
+}
+
+void GraphicsView::changeImage(QImage image) {
+    scene()->clear(); //deletes the content of currentImage
+    currentImage = scene()->addPixmap(QPixmap::fromImage(image));
+    currentImage->setTransformationMode(Qt::SmoothTransformation);
+    
+    //when switching between zoomed-in images of the same size, the
+    //zoom should not reset
+    if(image.width() != prevImageWidth || image.height() != prevImageHeight) {
+        //if images are not of the same size
+        fitImageInView();
+    }
+    
+    prevImageWidth = image.width();
+    prevImageHeight = image.height();
 }
 
 void GraphicsView::dragEnterEvent(QDragEnterEvent* event) {
@@ -51,21 +82,81 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
-    if(event->delta() > 0)
-    {
-        emit mouseWheelZoom(true);
-    }
+    zoom(event->delta());
+}
+
+void GraphicsView::zoom(int wheelAngle) {
+    //wheelAngle aka delta > 0 means forward (zoom in), < 0 means backwards (zoom out)
+    if(wheelAngle > 0)
+        wheelPosition += 1.0;
     else
-    {
-        emit mouseWheelZoom(false);
-    }
+        wheelPosition -= 1.0;
+    
+    scaleFactor = calcScaleFactor(wheelPosition);
+    
+    resetTransform();
+    scale(scaleFactor, scaleFactor);
+    
+    emit scaleChanged(scaleFactor);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton) {
-        emit rightClick();
+        //rightclick -> reset image scale to 1:1
+        resetTransform();
+        scaleFactor = 1.0;
+        wheelPosition = 40.0; //the same as calcWheelPosition(1.0);
     }
     else if(event->button() == Qt::MiddleButton) {
-        emit middleClick();
+        //middle click -> fit image to view
+        fitImageInView();
     }
+    
+    emit scaleChanged(scaleFactor);
+}
+
+void GraphicsView::fitImageInView() {
+    //remove scrollbars before calculating the needed scenerect
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    
+    //adapt scene's bounding rect to image
+    scene()->setSceneRect(QRectF(0, 0, currentImage->pixmap().width(), currentImage->pixmap().height()));
+    //fit scene into graphicsview
+    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    
+    //re-enable scrollbars
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    
+    //compute current scaleFactor and corresponding wheel position
+    double width = (double)scene()->width() / (double)this->width();
+    double height = (double)scene()->height() / (double)this->height();
+    scaleFactor = (height > width) ? (1.0 / height) : (1.0 / width);
+    wheelPosition = calcWheelPosition(scaleFactor);
+}
+
+double GraphicsView::calcScaleFactor(double wheelPos) {
+    // f(x) = c * a^x   where a = 2^(1/8) and c = (0.25 / a^24)
+    // simplified: f(x) = (0.25 / (2^(1/8))^(24)) * (2^(1/8))^x
+    
+    double a = pow(2.0, (1.0 / 8.0));
+    double c = 0.25 / pow(a, 24.0);
+    
+    return c * pow(a, wheelPos);
+}
+
+double GraphicsView::calcWheelPosition(double scaleFac) {
+    //calculates x to a given y for the function in calcScaleFactor()
+    double a = pow(2.0, (1.0 / 8.0));
+    double c = 0.25 / pow(a, 24.0);
+    
+    double log_a = log(a);
+    double log_c = log(c);
+    
+    return (log(scaleFac) - log_c) / log_a;
+}
+
+double GraphicsView::getScaleFactor() {
+    return scaleFactor;
 }

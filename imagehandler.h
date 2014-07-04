@@ -5,7 +5,7 @@
 #include <QUrl>
 #include <QObject>
 #include <QLabel>
-#include "graphicsscene.h"
+#include "graphicsview.h"
 
 class ImageHandler : public QObject
 {
@@ -13,14 +13,14 @@ class ImageHandler : public QObject
 
 public:
     ImageHandler();
-    ImageHandler(GraphicsScene *scene);
+    ImageHandler(GraphicsView *view);
     bool load(QUrl url);
     QImage getImage();
     QUrl getImageUrl();
     void save(QString path, int quality = -1);
 
 private:
-    GraphicsScene *scene;
+    GraphicsView *view;
     QImage image;
     QUrl imageUrl;
     

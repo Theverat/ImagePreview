@@ -14,8 +14,8 @@ ImageHandler::ImageHandler() {
     
 }
 
-ImageHandler::ImageHandler(GraphicsScene *scene){
-    this->scene = scene;
+ImageHandler::ImageHandler(GraphicsView *view){
+    this->view = view;
 }
 
 bool ImageHandler::load(QUrl url){
@@ -37,9 +37,7 @@ bool ImageHandler::load(QUrl url){
     imageUrl = url;
     
     //display the image in the graphicsview
-    scene->clear();
-    QGraphicsPixmapItem *item = scene->addPixmap(QPixmap::fromImage(image));
-    item->setTransformationMode(Qt::SmoothTransformation);
+    view->changeImage(image);
     
     //tell the mainwindow the image was loaded
     emit imageLoaded();
