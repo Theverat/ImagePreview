@@ -22,9 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     GraphicsScene *scene = new GraphicsScene();
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(QBrush(Qt::black));
-    //ui->graphicsView->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
     ui->graphicsView->setAcceptDrops(true);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView->showHelp();
     
     //initialize imageHandler
     imageHandler = new ImageHandler(ui->graphicsView);
@@ -37,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
     connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
+    //doubleclick -> fullscreen
+    connect(ui->graphicsView, SIGNAL(doubleClicked()), this, SLOT(toggleFullscreen()));
     //display image info, update scale factor display 
     connect(imageHandler, SIGNAL(imageLoaded()), this, SLOT(initImageLoaded()));
     connect(ui->graphicsView, SIGNAL(scaleChanged(double)), this, SLOT(displayImageInfo()));
@@ -45,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     
     //read last window position from registry
     readPositionSettings();
+    //should not start as fullscreen
+    this->setWindowState(Qt::WindowNoState);
     
     //if the program was opened via "open with" by the OS, extract the image path from the arguments
     QStringList args = QCoreApplication::arguments();
@@ -86,8 +90,6 @@ void MainWindow::displayImageInfo() {
     ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()));
     ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
     ui->label_scale->setText(QString::number(ui->graphicsView->getScaleFactor() * 100.0) + "%");
-    
-    ui->label_path->adjustSize();
 }
 
 void MainWindow::openFolder() {
@@ -99,9 +101,9 @@ void MainWindow::openFolder() {
 
 void MainWindow::convertImages() {
     QList<QUrl> urls = QFileDialog::getOpenFileUrls(this,
-                                                     "Select Images to Convert",
-                                                     imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename),
-                                                     "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
+                                                    "Select Images to Convert",
+                                                    imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename),
+                                                    "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
     
     if(urls.size() == 0)
         return;
@@ -111,12 +113,33 @@ void MainWindow::convertImages() {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    //determineZoom();
+    if(imageHandler->getImage().width() < ui->graphicsView->width() 
+            && imageHandler->getImage().height() < ui->graphicsView->width()) {
+        
+        ui->graphicsView->resetImageScale();
+    }
+    else {
+        ui->graphicsView->fitImageInView();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     writePositionSettings();
+}
+
+void MainWindow::toggleFullscreen() {
+    if(isFullScreen()) {
+        this->setWindowState(Qt::WindowNoState);
+        ui->widget_infobar->show();
+    } 
+    else 
+    {
+        this->setWindowState(Qt::WindowFullScreen);
+        ui->widget_infobar->hide();
+    }
+    
+    ui->graphicsView->fitImageInView();
 }
 
 //write window size, position etc. to registry

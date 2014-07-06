@@ -15,10 +15,14 @@ public:
     void dragMoveEvent(QDragMoveEvent* event);
     void dropEvent(QDropEvent* event);
     void keyPressEvent(QKeyEvent* event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void changeImage(QImage image);
     double getScaleFactor();
+    void fitImageInView();
+    void resetImageScale();
+    void showHelp();
     
 private:
     QGraphicsPixmapItem *currentImage;
@@ -26,10 +30,10 @@ private:
     int prevImageHeight;
     double wheelPosition;
     double scaleFactor;
+    QGraphicsSimpleTextItem *helpTextItem;
     
     void init();
     void zoom(int wheelAngle);
-    void fitImageInView();
     double calcScaleFactor(double wheelPos);
     double calcWheelPosition(double scaleFac);
     
@@ -42,6 +46,7 @@ signals:
     void controlSPressed();
     void controlCPressed();
     void scaleChanged(double newScale);
+    void doubleClicked();
 };
 
 #endif // GRAPHICSVIEW_H

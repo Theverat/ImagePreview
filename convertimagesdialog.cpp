@@ -13,6 +13,7 @@ ConvertImagesDialog::ConvertImagesDialog(QWidget *parent, ImageHandler *imageHan
     
     connect(ui->pushButton_convert, SIGNAL(clicked()), this, SLOT(convert()));
     connect(ui->comboBox_format, SIGNAL(currentIndexChanged(QString)), this, SLOT(setQualityOptions(QString)));
+    connect(ui->pushButton_cancel, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 ConvertImagesDialog::~ConvertImagesDialog()

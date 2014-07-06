@@ -3,8 +3,10 @@
 #include <QDropEvent>
 #include <QApplication>
 #include <QGraphicsPixmapItem>
+#include <QTextStream>
 
 #include <math.h>
+#include <iostream>
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent) : 
     QGraphicsView(scene, parent)
@@ -24,6 +26,7 @@ void GraphicsView::init() {
     currentImage = new QGraphicsPixmapItem();
     prevImageWidth = 0;
     prevImageHeight = 0;
+    helpTextItem = 0;
 }
 
 void GraphicsView::changeImage(QImage image) {
@@ -32,10 +35,15 @@ void GraphicsView::changeImage(QImage image) {
     currentImage->setTransformationMode(Qt::SmoothTransformation);
     
     //when switching between zoomed-in images of the same size, the
-    //zoom should not reset
+    //zoom should not reset. Also, if the image is smaller than the 
+    //graphicsscene it should not get "blown up" but stay at 1:1 size.
     if(image.width() != prevImageWidth || image.height() != prevImageHeight) {
-        //if images are not of the same size
-        fitImageInView();
+        if(image.width() < this->width() && image.height() < this->height()) {
+            resetImageScale();
+        }
+        else {
+            fitImageInView();
+        }
     }
     
     prevImageWidth = image.width();
@@ -81,6 +89,10 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
     }
 }
 
+void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
+    emit doubleClicked();
+}
+
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     zoom(event->delta());
 }
@@ -103,9 +115,7 @@ void GraphicsView::zoom(int wheelAngle) {
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton) {
         //rightclick -> reset image scale to 1:1
-        resetTransform();
-        scaleFactor = 1.0;
-        wheelPosition = 40.0; //the same as calcWheelPosition(1.0);
+        resetImageScale();
     }
     else if(event->button() == Qt::MiddleButton) {
         //middle click -> fit image to view
@@ -113,6 +123,19 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
     }
     
     emit scaleChanged(scaleFactor);
+}
+
+void GraphicsView::resetImageScale() {
+    //adapt scene's bounding rect to image
+    scene()->setSceneRect(QRectF(0, 0, currentImage->pixmap().width(), currentImage->pixmap().height()));
+    //fit scene into graphicsview
+    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    
+    resetTransform();
+    centerOn(currentImage);
+    
+    scaleFactor = 1.0;
+    wheelPosition = 40.0; //the same as calcWheelPosition(1.0);
 }
 
 void GraphicsView::fitImageInView() {
@@ -125,15 +148,15 @@ void GraphicsView::fitImageInView() {
     //fit scene into graphicsview
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
     
-    //re-enable scrollbars
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    
     //compute current scaleFactor and corresponding wheel position
     double width = (double)scene()->width() / (double)this->width();
     double height = (double)scene()->height() / (double)this->height();
     scaleFactor = (height > width) ? (1.0 / height) : (1.0 / width);
     wheelPosition = calcWheelPosition(scaleFactor);
+    
+    //re-enable scrollbars
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 double GraphicsView::calcScaleFactor(double wheelPos) {
@@ -160,3 +183,24 @@ double GraphicsView::calcWheelPosition(double scaleFac) {
 double GraphicsView::getScaleFactor() {
     return scaleFactor;
 }
+
+//display readme text in graphicsview
+void GraphicsView::showHelp() {
+    if(!helpTextItem) {
+        scene()->clear();
+        
+        //load readme
+        QString readmeText("Start by dropping images here");
+        
+        QFile readme(QApplication::applicationDirPath().append("/readme.txt"));
+        
+        if (readme.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&readme);
+            readmeText = in.readAll();
+        }
+        
+        helpTextItem = scene()->addSimpleText(readmeText);
+        helpTextItem->setBrush(QColor(255, 255, 255)); 
+    }
+}
+
