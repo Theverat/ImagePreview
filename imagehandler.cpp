@@ -24,7 +24,7 @@ bool ImageHandler::load(QUrl url){
         return false;
     }
     
-    //load the image
+    //load image
     image = QImage(url.toLocalFile());
     
     if(image.isNull()) {
@@ -89,7 +89,7 @@ void ImageHandler::loadImage(QUrl url) {
 //returns a QStringList that contains all names of images in url (e.g. "test.png", "test2.png")
 QStringList ImageHandler::getImagesInDir(QUrl url) {
     QStringList nameFilter;
-    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm" << "*.bmp" << "*.xpm";
+    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb";
     
     QDir directory(url.toLocalFile());
     
