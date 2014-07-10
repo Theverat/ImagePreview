@@ -38,16 +38,22 @@ void GraphicsView::changeImage(QImage image) {
     //zoom should not reset. Also, if the image is smaller than the 
     //graphicsscene it should not get "blown up" but stay at 1:1 size.
     if(image.width() != prevImageWidth || image.height() != prevImageHeight) {
-        if(image.width() < this->width() && image.height() < this->height()) {
-            resetImageScale();
-        }
-        else {
-            fitImageInView();
-        }
+        autoFit();
     }
     
     prevImageWidth = image.width();
     prevImageHeight = image.height();
+}
+
+void GraphicsView::autoFit() {
+    QPixmap image = currentImage->pixmap();
+    
+    if(image.width() < this->width() && image.height() < this->height()) {
+        resetImageScale();
+    }
+    else {
+        fitImageInView();
+    }
 }
 
 void GraphicsView::dragEnterEvent(QDragEnterEvent* event) {
@@ -204,3 +210,9 @@ void GraphicsView::showHelp() {
     }
 }
 
+void GraphicsView::showText(QString text, QColor color) {
+    scene()->clear();
+    
+    QGraphicsSimpleTextItem *textItem = scene()->addSimpleText(text);
+    textItem->setBrush(color);
+}

@@ -67,11 +67,15 @@ void MainWindow::initImageLoaded() {
     QImage image = imageHandler->getImage();
     QUrl imageUrl = imageHandler->getImageUrl();
     
-    //determineZoom();
+    if(image.isNull()) {
+        ui->graphicsView->showText("Could Not Load Image\n" + imageUrl.toLocalFile());
+        return;
+    }
+    
     displayImageInfo();
     
     //use loaded image as application icon
-    QIcon icon(QPixmap::fromImage(image.scaled(64, 64, Qt::KeepAspectRatio)));
+    QIcon icon(QPixmap::fromImage(image.scaled(64, 64, Qt::KeepAspectRatioByExpanding)));
     this->setWindowIcon(icon);
     //use the name of the loaded image as window title
     this->setWindowTitle(QFileInfo(imageUrl.toLocalFile()).fileName() + " - Image Preview Tool");
@@ -103,7 +107,7 @@ void MainWindow::convertImages() {
     QList<QUrl> urls = QFileDialog::getOpenFileUrls(this,
                                                     "Select Images to Convert",
                                                     imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename),
-                                                    "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
+                                                    "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm *.psd *.psb)");
     
     if(urls.size() == 0)
         return;
@@ -139,7 +143,7 @@ void MainWindow::toggleFullscreen() {
         ui->widget_infobar->hide();
     }
     
-    ui->graphicsView->fitImageInView();
+    ui->graphicsView->autoFit();
 }
 
 //write window size, position etc. to registry

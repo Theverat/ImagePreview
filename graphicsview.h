@@ -21,8 +21,10 @@ public:
     void changeImage(QImage image);
     double getScaleFactor();
     void fitImageInView();
+    void autoFit();
     void resetImageScale();
     void showHelp();
+    void showText(QString text, QColor color = QColor(255, 255, 255));
     
 private:
     QGraphicsPixmapItem *currentImage;

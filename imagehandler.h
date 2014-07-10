@@ -14,7 +14,7 @@ class ImageHandler : public QObject
 public:
     ImageHandler();
     ImageHandler(GraphicsView *view);
-    bool load(QUrl url);
+    bool load(QUrl url, bool suppressErrors = false);
     QImage getImage();
     QUrl getImageUrl();
     void save(QString path, int quality = -1);
@@ -25,7 +25,7 @@ private:
     QUrl imageUrl;
     
     QStringList getImagesInDir(QUrl url);
-    void loadNeighbourImage(bool rightNeighbour);
+    void loadNeighbourImage(bool rightNeighbour, int index = -1);
 
 public slots:
     void loadImage(QUrl url);
