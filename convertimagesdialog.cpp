@@ -1,7 +1,6 @@
 #include "convertimagesdialog.h"
 #include "ui_convertimagesdialog.h"
 #include <QFileInfo>
-#include <iostream>
 
 ConvertImagesDialog::ConvertImagesDialog(QWidget *parent, ImageHandler *imageHandler, QList<QUrl> urls) :
     QDialog(parent),
@@ -38,11 +37,13 @@ void ConvertImagesDialog::convert() {
         
         QString savePath = newFilePath + "/" + newFileName + newFileSuffix;
         
-        std::cout << "Saving File " << savePath.toStdString() << std::endl;
-        imageHandler->save(savePath, ui->spinBox_jpgQuality->value());
+        QImage image(url.toLocalFile());
+        image.save(savePath, 0, ui->spinBox_jpgQuality->value());
     }
     
     ui->progressBar->setValue(100);
+    
+    close();
 }
 
 void ConvertImagesDialog::setQualityOptions(QString format) {
