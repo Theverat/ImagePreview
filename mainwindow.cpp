@@ -6,7 +6,6 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QSettings>
-#include <QKeyEvent>
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QMimeData>

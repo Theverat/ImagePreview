@@ -1,14 +1,11 @@
 #include "imagehandler.h"
+#include "convertimagesdialog.h"
 #include <QMessageBox>
-#include <QDirIterator>
-#include <QImageReader>
 #include <QFileInfo>
-#include <QGraphicsTextItem>
-#include <iostream>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QPushButton>
-#include "convertimagesdialog.h"
+
+#include <iostream>
 
 ImageHandler::ImageHandler() {
     

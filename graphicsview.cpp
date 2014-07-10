@@ -6,7 +6,6 @@
 #include <QTextStream>
 
 #include <math.h>
-#include <iostream>
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent) : 
     QGraphicsView(scene, parent)
@@ -104,12 +103,14 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event) {
-    if(event->button() == Qt::RightButton) {
-        emit dragToFolderConvertEvent();
-    }
-    else {
+    dragStart = event->pos();
+}
+
+void GraphicsView::mouseMoveEvent(QMouseEvent *event) {
+    int dragDistance = (dragStart - event->pos()).manhattanLength();
+    
+    if(dragDistance >= QApplication::startDragDistance())
         emit dragToFolderEvent();
-    }
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {

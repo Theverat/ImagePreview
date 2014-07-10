@@ -18,6 +18,7 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
     void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void changeImage(QImage image);
     double getScaleFactor();
@@ -34,6 +35,7 @@ private:
     double wheelPosition;
     double scaleFactor;
     QGraphicsSimpleTextItem *helpTextItem;
+    QPoint dragStart;
     
     void init();
     void zoom(int wheelAngle);
@@ -51,7 +53,6 @@ signals:
     void scaleChanged(double newScale);
     void doubleClicked();
     void dragToFolderEvent();
-    void dragToFolderConvertEvent();
 };
 
 #endif // GRAPHICSVIEW_H

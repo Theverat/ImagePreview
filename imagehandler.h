@@ -4,7 +4,6 @@
 #include <QImage>
 #include <QUrl>
 #include <QObject>
-#include <QLabel>
 #include "graphicsview.h"
 
 class ImageHandler : public QObject
