@@ -61,7 +61,7 @@ void GraphicsView::dragEnterEvent(QDragEnterEvent* event) {
 }
 
 void GraphicsView::dragMoveEvent(QDragMoveEvent* event) {
-    QGraphicsView::dragMoveEvent(event);
+     QGraphicsView::dragMoveEvent(event);
 }
 
 void GraphicsView::dropEvent(QDropEvent* event) {
@@ -103,6 +103,26 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     zoom(event->delta());
 }
 
+void GraphicsView::mousePressEvent(QMouseEvent *event) {
+    if(event->button() == Qt::RightButton) {
+        emit dragToFolderConvertEvent();
+    }
+    else {
+        emit dragToFolderEvent();
+    }
+}
+
+void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
+    if(event->button() == Qt::RightButton) {
+        //rightclick -> reset image scale to 1:1
+        resetImageScale();
+    }
+    else if(event->button() == Qt::MiddleButton) {
+        //middle click -> fit image to view
+        fitImageInView();
+    }
+}
+
 void GraphicsView::zoom(int wheelAngle) {
     //wheelAngle aka delta > 0 means forward (zoom in), < 0 means backwards (zoom out)
     if(wheelAngle > 0)
@@ -115,18 +135,11 @@ void GraphicsView::zoom(int wheelAngle) {
     resetTransform();
     scale(scaleFactor, scaleFactor);
     
-    emit scaleChanged(scaleFactor);
-}
-
-void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
-    if(event->button() == Qt::RightButton) {
-        //rightclick -> reset image scale to 1:1
-        resetImageScale();
-    }
-    else if(event->button() == Qt::MiddleButton) {
-        //middle click -> fit image to view
-        fitImageInView();
-    }
+    //turn off AA when zooming in beyond 100%
+    if(scaleFactor > 1.0)
+        currentImage->setTransformationMode(Qt::FastTransformation);
+    else
+        currentImage->setTransformationMode(Qt::SmoothTransformation);
     
     emit scaleChanged(scaleFactor);
 }
@@ -142,6 +155,8 @@ void GraphicsView::resetImageScale() {
     
     scaleFactor = 1.0;
     wheelPosition = 40.0; //the same as calcWheelPosition(1.0);
+    
+    emit scaleChanged(scaleFactor);
 }
 
 void GraphicsView::fitImageInView() {
@@ -163,6 +178,8 @@ void GraphicsView::fitImageInView() {
     //re-enable scrollbars
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    
+    emit scaleChanged(scaleFactor);
 }
 
 double GraphicsView::calcScaleFactor(double wheelPos) {

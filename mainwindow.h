@@ -32,6 +32,7 @@ private slots:
     void openFolder();
     void convertImages();
     void toggleFullscreen();
+    void dragToFolder();
 };
 
 #endif // MAINWINDOW_H

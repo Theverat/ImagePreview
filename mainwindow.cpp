@@ -9,6 +9,8 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QGraphicsItem>
+#include <QMimeData>
+#include <QDrag>
 
 #include <iostream>
 
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect signals/slots
     //graphicsview drag and drop
     connect(ui->graphicsView, SIGNAL(singleImageDropped(QUrl)), imageHandler, SLOT(loadImage(QUrl)));
+    connect(ui->graphicsView, SIGNAL(dragToFolderEvent()), this, SLOT(dragToFolder()));
     //keyboard shortcuts
     connect(ui->graphicsView, SIGNAL(keyLeftPressed()), imageHandler, SLOT(previous()));
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
@@ -103,6 +106,20 @@ void MainWindow::openFolder() {
         QDesktopServices::openUrl(folderUrl);
 }
 
+void MainWindow::dragToFolder() {
+    QMimeData *mimeData = new QMimeData;
+    
+    //pass url to mimedata
+    QList<QUrl> urls;
+    urls.append(imageHandler->getImageUrl());
+    mimeData->setUrls(urls);
+    
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    
+    drag->exec(Qt::CopyAction);
+}
+
 void MainWindow::convertImages() {
     QList<QUrl> urls = QFileDialog::getOpenFileUrls(this,
                                                     "Select Images to Convert",
@@ -117,30 +134,22 @@ void MainWindow::convertImages() {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    if(imageHandler->getImage().width() < ui->graphicsView->width() 
-            && imageHandler->getImage().height() < ui->graphicsView->width()) {
-        
-        ui->graphicsView->resetImageScale();
-    }
-    else {
-        ui->graphicsView->fitImageInView();
-    }
+    ui->graphicsView->autoFit();
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
+void MainWindow::closeEvent(QCloseEvent* event) {
     writePositionSettings();
 }
 
 void MainWindow::toggleFullscreen() {
     if(isFullScreen()) {
-        this->setWindowState(Qt::WindowNoState);
         ui->widget_infobar->show();
+        this->setWindowState(Qt::WindowNoState);
     } 
     else 
     {
-        this->setWindowState(Qt::WindowFullScreen);
         ui->widget_infobar->hide();
+        this->setWindowState(Qt::WindowFullScreen);
     }
     
     ui->graphicsView->autoFit();

@@ -17,6 +17,7 @@ public:
     void keyPressEvent(QKeyEvent* event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
+    void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void changeImage(QImage image);
     double getScaleFactor();
@@ -49,6 +50,8 @@ signals:
     void controlCPressed();
     void scaleChanged(double newScale);
     void doubleClicked();
+    void dragToFolderEvent();
+    void dragToFolderConvertEvent();
 };
 
 #endif // GRAPHICSVIEW_H
