@@ -330,9 +330,55 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_scale">
-         <property name="text">
-          <string>100%</string>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_scale">
+         <property name="styleSheet">
+          <string notr="true">QDoubleSpinBox {
+	background-color: #222;
+	color: #eee;
+	border
+}
+
+QDoubleSpinBox::up-arrow {
+ }
+
+QDoubleSpinBox::down-arrow {
+ }</string>
+         </property>
+         <property name="wrapping">
+          <bool>false</bool>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::UpDownArrows</enum>
+         </property>
+         <property name="specialValueText">
+          <string/>
+         </property>
+         <property name="accelerated">
+          <bool>false</bool>
+         </property>
+         <property name="suffix">
+          <string>%</string>
+         </property>
+         <property name="decimals">
+          <number>2</number>
+         </property>
+         <property name="minimum">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>9999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>10.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>100.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -351,6 +397,49 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_drag">
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+
+padding: 2px;
+
+color: #fff;
+background-color: rgb(88, 88, 88);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #888, stop: 1 #222);
+*/
+
+border: 1px solid;
+border-color: #777;
+border-radius: 3px;
+
+height: 16px;
+}
+
+QPushButton::hover {
+
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #a6a6a6, stop: 0.08 #7f7f7f,
+stop: 0.39999 #68717b, stop: 0.4 #4a5e75,
+stop: 0.9 #4c4c4c, stop: 1 #333333);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
+*/
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Click to Drag</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_openFolder">

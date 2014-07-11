@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect signals/slots
     //graphicsview drag and drop
     connect(ui->graphicsView, SIGNAL(singleImageDropped(QUrl)), imageHandler, SLOT(loadImage(QUrl)));
-    connect(ui->graphicsView, SIGNAL(dragToFolderEvent()), this, SLOT(dragToFolder()));
     //keyboard shortcuts
     connect(ui->graphicsView, SIGNAL(keyLeftPressed()), imageHandler, SLOT(previous()));
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
@@ -46,6 +45,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(scaleChanged(double)), this, SLOT(displayImageInfo()));
     //open in file browser
     connect(ui->pushButton_openFolder, SIGNAL(clicked()), this, SLOT(openFolder()));
+    //drag image (copy to folder)
+    connect(ui->pushButton_drag, SIGNAL(pressed()), this, SLOT(dragToFolder()));
+    //set scale (double spinbox)
+    connect(ui->doubleSpinBox_scale, SIGNAL(editingFinished()), this, SLOT(setZoom()));
     
     //read last window position from registry
     readPositionSettings();
@@ -95,7 +98,8 @@ void MainWindow::displayImageInfo() {
     ui->label_path->setText(imageUrl.toLocalFile());
     ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()));
     ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
-    ui->label_scale->setText(QString::number(ui->graphicsView->getScaleFactor() * 100.0) + "%");
+    
+    ui->doubleSpinBox_scale->setValue(ui->graphicsView->getScaleFactor() * 100.0);
 }
 
 void MainWindow::openFolder() {
@@ -155,6 +159,10 @@ void MainWindow::toggleFullscreen() {
     }
     
     ui->graphicsView->autoFit();
+}
+
+void MainWindow::setZoom() {
+    ui->graphicsView->zoom(ui->doubleSpinBox_scale->value() / 100.0);
 }
 
 //write window size, position etc. to registry

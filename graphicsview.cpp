@@ -6,6 +6,7 @@
 #include <QTextStream>
 
 #include <math.h>
+#include <iostream>
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent) : 
     QGraphicsView(scene, parent)
@@ -104,21 +105,14 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
     zoom(event->delta());
 }
 
-void GraphicsView::mousePressEvent(QMouseEvent *event) {
-    dragStart = event->pos();
-}
-
-void GraphicsView::mouseMoveEvent(QMouseEvent *event) {
-    int dragDistance = (dragStart - event->pos()).manhattanLength();
-    
-    if(dragDistance >= QApplication::startDragDistance())
-        emit dragToFolderEvent();
-}
-
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
     if(event->button() == Qt::RightButton) {
         //rightclick -> reset image scale to 1:1
         resetImageScale();
+        
+        double centerX = (double)(currentImage->pixmap().width() / width()) * event->pos().x();
+        double centerY = (double)(currentImage->pixmap().height() / height()) * event->pos().y();
+        centerOn(centerX, centerY);
     }
     else if(event->button() == Qt::MiddleButton) {
         //middle click -> fit image to view
@@ -135,6 +129,20 @@ void GraphicsView::zoom(int wheelAngle) {
     
     scaleFactor = calcScaleFactor(wheelPosition);
     
+    setScale();
+}
+
+void GraphicsView::zoom(double scale) {
+    if(scale == scaleFactor)
+        return;
+    
+    scaleFactor = scale;
+    wheelPosition = calcWheelPosition(scaleFactor);
+    
+    setScale();
+}
+
+void GraphicsView::setScale() {
     resetTransform();
     scale(scaleFactor, scaleFactor);
     
