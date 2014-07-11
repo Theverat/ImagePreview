@@ -25,8 +25,8 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     image = QImage(url.toLocalFile());
     
     if(image.isNull() && !suppressErrors) {
-            QMessageBox::information(0, "Error while loading image",
-                                     "Image not loaded!\nMost likely the image format is not supported.");
+        QMessageBox::information(0, "Error while loading image",
+                                 "Image not loaded!\nMost likely the image format is not supported.");
         
         return false;
     }
@@ -53,7 +53,7 @@ void ImageHandler::previous(){
     loadNeighbourImage(false);
 }
 
-void ImageHandler::loadNeighbourImage(bool rightNeighbour, int index) {
+void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
     QStringList images = getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename));
     
     //if there are no images or just one, do nothing
@@ -61,9 +61,7 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour, int index) {
         return;
     
     QFileInfo fileInfo(imageUrl.toLocalFile());
-    int current = index;
-    if(index == -1)
-        current = images.indexOf(QRegExp(QRegExp::escape(fileInfo.fileName())));
+    int current = images.indexOf(QRegExp(QRegExp::escape(fileInfo.fileName())));
     
     //convert rightNeighbour to an int (left = -1, right = 1)
     int relativeIndex = -1;
@@ -79,7 +77,6 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour, int index) {
     
     //construct the new Url and load the file
     QUrl neighbourUrl = QUrl::fromLocalFile(imageUrl.adjusted(QUrl::RemoveFilename).toLocalFile() + images.at(current));
-    //if image was not loaded, try loading the next/previous
     load(neighbourUrl, true);
 }
 

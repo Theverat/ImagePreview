@@ -24,7 +24,7 @@ private:
     QUrl imageUrl;
     
     QStringList getImagesInDir(QUrl url);
-    void loadNeighbourImage(bool rightNeighbour, int index = -1);
+    void loadNeighbourImage(bool rightNeighbour);
 
 public slots:
     void loadImage(QUrl url);

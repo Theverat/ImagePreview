@@ -106,6 +106,9 @@ void MainWindow::openFolder() {
 }
 
 void MainWindow::dragToFolder() {
+    if(imageHandler->getImage().isNull())
+        return;
+    
     QMimeData *mimeData = new QMimeData;
     
     //pass url to mimedata
