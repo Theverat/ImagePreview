@@ -30,9 +30,8 @@ void GraphicsView::init() {
 }
 
 void GraphicsView::changeImage(QImage image) {
-    scene()->clear(); //deletes the content of currentImage
+    scene()->clear(); 
     currentImage = scene()->addPixmap(QPixmap::fromImage(image));
-    currentImage->setTransformationMode(Qt::SmoothTransformation);
     
     //when switching between zoomed-in images of the same size, the
     //zoom should not reset. Also, if the image is smaller than the 
@@ -120,6 +119,14 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
+//turn off AA when zooming in beyond 100%
+void GraphicsView::choosePixmapTransform() {
+    if(scaleFactor < 1.0)
+        currentImage->setTransformationMode(Qt::SmoothTransformation);
+    else
+        currentImage->setTransformationMode(Qt::FastTransformation);
+}
+
 void GraphicsView::zoom(int wheelAngle) {
     //wheelAngle aka delta > 0 means forward (zoom in), < 0 means backwards (zoom out)
     if(wheelAngle > 0)
@@ -146,13 +153,8 @@ void GraphicsView::setScale() {
     resetTransform();
     scale(scaleFactor, scaleFactor);
     
-    //turn off AA when zooming in beyond 100%
-    if(scaleFactor > 1.0)
-        currentImage->setTransformationMode(Qt::FastTransformation);
-    else
-        currentImage->setTransformationMode(Qt::SmoothTransformation);
-    
     emit scaleChanged(scaleFactor);
+    choosePixmapTransform();
 }
 
 void GraphicsView::resetImageScale() {
@@ -191,6 +193,7 @@ void GraphicsView::fitImageInView() {
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     
     emit scaleChanged(scaleFactor);
+    choosePixmapTransform();
 }
 
 double GraphicsView::calcScaleFactor(double wheelPos) {

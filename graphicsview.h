@@ -37,6 +37,7 @@ private:
     void init();
     void zoom(int wheelAngle);
     void setScale();
+    void choosePixmapTransform();
     double calcScaleFactor(double wheelPos);
     double calcWheelPosition(double scaleFac);
     
