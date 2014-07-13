@@ -10,6 +10,7 @@
 #include <QGraphicsItem>
 #include <QMimeData>
 #include <QDrag>
+#include <QDesktopWidget>
 
 #include <iostream>
 
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     
     //read last window position from registry
     readPositionSettings();
+    
     //should not start as fullscreen
     this->setWindowState(Qt::WindowNoState);
     
@@ -59,6 +61,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 1) {
         imageHandler->loadImage(QUrl::fromLocalFile(args.at(1)));
+        
+        if(!isFullScreen()) {
+            //adapt the size of the window to the image if it is smaller than the screen
+            int imageWidth = imageHandler->getImage().width();
+            int imageHeight = imageHandler->getImage().height();
+            
+            int screenWidth = QApplication::desktop()->width();
+            int screenHeight = QApplication::desktop()->height();
+            
+            if(imageWidth < screenWidth - 100 && imageHeight < screenHeight - 100
+                    && imageWidth > 255 && imageHeight > 255) {
+                this->resize(imageWidth + 50, imageHeight + 50);
+            }
+        }
     }
 }
 
