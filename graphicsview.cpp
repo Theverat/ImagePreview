@@ -121,7 +121,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
 
 //turn off AA when zooming in beyond 100%
 void GraphicsView::choosePixmapTransform() {
-    if(scaleFactor < 1.0)
+    if(scaleFactor < 2.0)
         currentImage->setTransformationMode(Qt::SmoothTransformation);
     else
         currentImage->setTransformationMode(Qt::FastTransformation);

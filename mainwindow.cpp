@@ -151,11 +151,13 @@ void MainWindow::toggleFullscreen() {
     if(isFullScreen()) {
         ui->widget_infobar->show();
         this->setWindowState(Qt::WindowNoState);
+        QApplication::restoreOverrideCursor();
     } 
     else 
     {
         ui->widget_infobar->hide();
         this->setWindowState(Qt::WindowFullScreen);
+        QApplication::setOverrideCursor(Qt::BlankCursor);
     }
     
     ui->graphicsView->autoFit();
