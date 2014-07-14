@@ -93,6 +93,9 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
             emit controlCPressed();
         }
         break;
+    case Qt::Key_Escape:
+        emit doubleClicked();
+        break;
     }
 }
 
