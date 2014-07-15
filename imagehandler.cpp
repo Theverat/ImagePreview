@@ -138,3 +138,22 @@ void ImageHandler::save() {
 void ImageHandler::convertMultiple() {
     
 }
+
+void ImageHandler::deleteCurrentOnDisk() {
+    if(!imageUrl.isValid())
+        return;
+    
+    QFile file(imageUrl.toLocalFile());
+    
+    if(getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename)).size() > 1) {
+        next();
+    }
+    else {
+        image = QImage();
+        imageUrl = QUrl();
+        
+        view->showText("No images in current folder.\nDrop image here to open it.");
+    }
+    
+    file.remove();
+}

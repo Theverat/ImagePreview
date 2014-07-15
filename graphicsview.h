@@ -54,6 +54,7 @@ signals:
     void controlCPressed();
     void scaleChanged(double newScale);
     void doubleClicked();
+    void deletePressed();
 };
 
 #endif // GRAPHICSVIEW_H

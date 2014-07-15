@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
     connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
+    connect(ui->graphicsView, SIGNAL(deletePressed()), imageHandler, SLOT(deleteCurrentOnDisk()));
     //doubleclick -> fullscreen
     connect(ui->graphicsView, SIGNAL(doubleClicked()), this, SLOT(toggleFullscreen()));
     //display image info, update scale factor display 

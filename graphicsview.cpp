@@ -96,6 +96,9 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_Escape:
         emit doubleClicked();
         break;
+    case Qt::Key_Delete:
+        emit deletePressed();
+        break;
     }
 }
 
@@ -249,4 +252,6 @@ void GraphicsView::showText(QString text, QColor color) {
     
     QGraphicsSimpleTextItem *textItem = scene()->addSimpleText(text);
     textItem->setBrush(color);
+    
+    resetImageScale();
 }

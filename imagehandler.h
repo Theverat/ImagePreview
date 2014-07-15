@@ -32,6 +32,7 @@ public slots:
     void previous();
     void save();
     void convertMultiple();
+    void deleteCurrentOnDisk();
     
 signals:
     void imageLoaded();
