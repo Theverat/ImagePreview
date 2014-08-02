@@ -15,7 +15,16 @@ RestoreTrashDialog::RestoreTrashDialog(QWidget *parent, TrashHandler *trashHandl
     connect(ui->pushButton_cancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushButton_deleteAll, SIGNAL(clicked()), this, SLOT(accept()));
 
-    ui->listWidget->addItems(trashHandler->getFileNames());
+    foreach(TrashedFile file, trashHandler->getFiles()) {
+        //create icon
+        QPixmap pixmap(file.getUrl().toLocalFile());
+        QIcon icon(pixmap.scaledToHeight(128));
+
+        QListWidgetItem *item = new QListWidgetItem(file.getUrl().fileName());
+        item->setIcon(icon);
+
+        ui->listWidget->addItem(item);
+    }
 }
 
 RestoreTrashDialog::~RestoreTrashDialog()

@@ -33,6 +33,10 @@ QStringList TrashHandler::getFileNames() {
     return fileNames;
 }
 
+const QList<TrashedFile> TrashHandler::getFiles() {
+    return trash;
+}
+
 bool TrashHandler::restore(int index) {
     if(index < 0 || index >= trash.size())
         return false;

@@ -12,6 +12,7 @@ public:
     TrashHandler();
     bool moveToTrash(QUrl url);
     QStringList getFileNames();
+    const QList<TrashedFile> getFiles();
     bool restore(int index);
     bool isEmpty();
     QUrl getTrashUrl();
