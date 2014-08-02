@@ -8,11 +8,12 @@
 #include <iostream>
 
 ImageHandler::ImageHandler() {
-    
+    connect(&fileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadModifiedImage(QString)));
 }
 
 ImageHandler::ImageHandler(GraphicsView *view){
     this->view = view;
+    connect(&fileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadModifiedImage(QString)));
 }
 
 bool ImageHandler::load(QUrl url, bool suppressErrors){
@@ -36,6 +37,9 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     
     //display the image in the graphicsview
     view->changeImage(image);
+
+    //add the image file to the fileSystemWatcher
+    fileSystemWatcher.addPath(url.toLocalFile());
     
     //tell the mainwindow the image was loaded
     emit imageLoaded();
@@ -75,6 +79,9 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
     else if(current > images.size() - 1)
         current = 0;
     
+    //remove current image from fileSystemWatcher
+    fileSystemWatcher.removePath(imageUrl.toLocalFile());
+
     //construct the new Url and load the file
     QUrl neighbourUrl = QUrl::fromLocalFile(imageUrl.adjusted(QUrl::RemoveFilename).toLocalFile() + images.at(current));
     load(neighbourUrl, true);
@@ -82,6 +89,13 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
 
 void ImageHandler::loadImage(QUrl url) {
     load(url);
+}
+
+void ImageHandler::reloadModifiedImage(QString path) {
+    if(QImage(path).isNull())
+        return;
+
+    load(QUrl::fromLocalFile(path));
 }
 
 //returns a QStringList that contains all names of images in url (e.g. "test.png", "test2.png")
@@ -139,11 +153,11 @@ void ImageHandler::convertMultiple() {
     
 }
 
-void ImageHandler::deleteCurrentOnDisk() {
+void ImageHandler::deleteCurrent() {
     if(!imageUrl.isValid())
         return;
-    
-    QFile file(imageUrl.toLocalFile());
+
+    QUrl fileToTrash = imageUrl;
     
     if(getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename)).size() > 1) {
         next();
@@ -154,6 +168,21 @@ void ImageHandler::deleteCurrentOnDisk() {
         
         view->showText("No images in current folder.\nDrop image here to open it.");
     }
-    
-    file.remove();
+
+    if(!trashHandler.moveToTrash(fileToTrash)) {
+        //could not move image to trash
+        //ask user if file should be removed directly
+
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(0, "Error", "Could not move image to trash!\nDo you want to delete it directly?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            QFile file(fileToTrash.toLocalFile());
+            file.remove();
+        }
+    }
+}
+
+TrashHandler* ImageHandler::getTrashHandler() {
+    return &trashHandler;
 }

@@ -17,13 +17,20 @@ SOURCES += main.cpp\
     graphicsscene.cpp \
     graphicsview.cpp \
     imagehandler.cpp \
-    convertimagesdialog.cpp
+    convertimagesdialog.cpp \
+    trashhandler.cpp \
+    trashedfile.cpp \
+    restoretrashdialog.cpp
 
 HEADERS  += mainwindow.h \
     graphicsscene.h \
     graphicsview.h \
     imagehandler.h \
-    convertimagesdialog.h
+    convertimagesdialog.h \
+    trashhandler.h \
+    trashedfile.h \
+    restoretrashdialog.h
 
 FORMS    += mainwindow.ui \
-    convertimagesdialog.ui
+    convertimagesdialog.ui \
+    restoretrashdialog.ui

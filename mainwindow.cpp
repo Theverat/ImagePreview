@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "graphicsscene.h"
 #include "convertimagesdialog.h"
+#include "restoretrashdialog.h"
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -11,6 +12,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QDesktopWidget>
+#include <QCloseEvent>
 
 #include <iostream>
 
@@ -39,10 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
     connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
-    connect(ui->graphicsView, SIGNAL(deletePressed()), imageHandler, SLOT(deleteCurrentOnDisk()));
+    connect(ui->graphicsView, SIGNAL(deletePressed()), imageHandler, SLOT(deleteCurrent()));
     //doubleclick -> fullscreen
     connect(ui->graphicsView, SIGNAL(doubleClicked()), this, SLOT(toggleFullscreen()));
-    //display image info, update scale factor display 
+    //display image info, update scale factor display
     connect(imageHandler, SIGNAL(imageLoaded()), this, SLOT(initImageLoaded()));
     connect(ui->graphicsView, SIGNAL(scaleChanged(double)), this, SLOT(displayImageInfo()));
     //open in file browser
@@ -161,6 +163,15 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
+    //trash handling
+    if(!imageHandler->getTrashHandler()->isEmpty()) {
+        RestoreTrashDialog *dialog = new RestoreTrashDialog(this, imageHandler->getTrashHandler());
+        if(dialog->exec() == 0) {
+            //"cancel" was pressed -> mainwindow should not close
+            event->ignore();
+        }
+    }
+
     writePositionSettings();
 }
 
@@ -169,8 +180,8 @@ void MainWindow::toggleFullscreen() {
         ui->widget_infobar->show();
         this->setWindowState(Qt::WindowNoState);
         QApplication::restoreOverrideCursor();
-    } 
-    else 
+    }
+    else
     {
         ui->widget_infobar->hide();
         this->setWindowState(Qt::WindowFullScreen);
