@@ -11,8 +11,9 @@ ImageHandler::ImageHandler() {
     connect(&fileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadModifiedImage(QString)));
 }
 
-ImageHandler::ImageHandler(GraphicsView *view){
+ImageHandler::ImageHandler(GraphicsView *view, QWidget *parent){
     this->view = view;
+    this->parent = parent;
     connect(&fileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadModifiedImage(QString)));
 }
 
@@ -26,7 +27,7 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     image = QImage(url.toLocalFile());
     
     if(image.isNull() && !suppressErrors) {
-        QMessageBox::information(0, "Error while loading image",
+        QMessageBox::information(parent, "Error while loading image",
                                  "Image not loaded!\nMost likely the image format is not supported.");
         
         return false;
@@ -34,6 +35,7 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     
     //store the path the image was loaded from (for saving later)
     imageUrl = url;
+    rotated = false;
     
     //display the image in the graphicsview
     view->changeImage(image);
@@ -78,6 +80,16 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
         current = images.size() - 1;
     else if(current > images.size() - 1)
         current = 0;
+
+    //if image was rotated, ask if it should be saved
+    if(rotated) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(parent, "Save Rotated Image", "The image was rotated. Do you want to save it?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            save(imageUrl.toLocalFile(), 98);
+        }
+    }
     
     //remove current image from fileSystemWatcher
     fileSystemWatcher.removePath(imageUrl.toLocalFile());
@@ -118,11 +130,11 @@ QUrl ImageHandler::getImageUrl() {
 
 void ImageHandler::save(QString path, int quality) {
     if(!image.save(path, 0, quality))
-        QMessageBox::information(0, "Error while saving Image", "Image not saved!");
+        QMessageBox::information(parent, "Error while saving Image", "Image not saved!");
 }
 
 void ImageHandler::save() {
-    QUrl url = QFileDialog::getSaveFileUrl(0,
+    QUrl url = QFileDialog::getSaveFileUrl(parent,
                                            "Save as",
                                            imageUrl,
                                            "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
@@ -141,7 +153,7 @@ void ImageHandler::save() {
     int quality = -1;
     if(file.suffix().toLower() == "jpg" || file.suffix().toLower() == "jpeg") {
         bool ok;
-        quality = QInputDialog::getInt(0, "Quality", "JPG Quality:", 98, 1, 100, 1, &ok);
+        quality = QInputDialog::getInt(parent, "Quality", "JPG Quality:", 98, 1, 100, 1, &ok);
         if(!ok)
             quality = 98;
     }
@@ -174,7 +186,7 @@ void ImageHandler::deleteCurrent() {
         //ask user if file should be removed directly
 
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(0, "Error", "Could not move image to trash!\nDo you want to delete it directly?",
+        reply = QMessageBox::question(parent, "Error", "Could not move image to trash!\nDo you want to delete it directly?",
                                       QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             QFile file(fileToTrash.toLocalFile());
@@ -185,4 +197,13 @@ void ImageHandler::deleteCurrent() {
 
 TrashHandler* ImageHandler::getTrashHandler() {
     return &trashHandler;
+}
+
+void ImageHandler::rotateCurrent() {
+    QTransform transform;
+    transform.rotate(90);
+    image = image.transformed(transform);
+
+    view->changeImage(image);
+    rotated = true;
 }

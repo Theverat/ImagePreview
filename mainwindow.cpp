@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->showHelp();
     
     //initialize imageHandler
-    imageHandler = new ImageHandler(ui->graphicsView);
+    imageHandler = new ImageHandler(ui->graphicsView, this);
     
     //connect signals/slots
     //graphicsview drag and drop
@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(controlSPressed()), imageHandler, SLOT(save()));
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
     connect(ui->graphicsView, SIGNAL(deletePressed()), imageHandler, SLOT(deleteCurrent()));
+    connect(ui->graphicsView, SIGNAL(rotatePressed()), imageHandler, SLOT(rotateCurrent()));
     //doubleclick -> fullscreen
     connect(ui->graphicsView, SIGNAL(doubleClicked()), this, SLOT(toggleFullscreen()));
     //display image info, update scale factor display
