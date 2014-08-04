@@ -1,6 +1,7 @@
 #include "restoretrashdialog.h"
 #include "ui_restoretrashdialog.h"
 #include <QDesktopServices>
+#include <QProgressDialog>
 #include <iostream>
 
 RestoreTrashDialog::RestoreTrashDialog(QWidget *parent, TrashHandler *trashHandler) :
@@ -15,7 +16,12 @@ RestoreTrashDialog::RestoreTrashDialog(QWidget *parent, TrashHandler *trashHandl
     connect(ui->pushButton_cancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushButton_deleteAll, SIGNAL(clicked()), this, SLOT(accept()));
 
+    QProgressDialog progress("Loading Trash...", "Cancel", 0, trashHandler->getFiles().size(), parent);
+    progress.setWindowModality(Qt::WindowModal);
+
     foreach(TrashedFile file, trashHandler->getFiles()) {
+        progress.setValue(progress.value() + 1);
+
         //create icon
         QPixmap pixmap(file.getUrl().toLocalFile());
         QIcon icon(pixmap.scaledToHeight(128));

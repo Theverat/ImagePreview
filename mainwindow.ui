@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
-    <height>644</height>
+    <width>784</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -235,6 +235,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
         <number>10</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <property name="leftMargin">
         <number>4</number>
