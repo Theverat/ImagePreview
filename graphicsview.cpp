@@ -97,6 +97,9 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_R:
         emit rotatePressed();
         break;
+    case Qt::Key_F:
+        fitImageInView();
+        break;
     case Qt::Key_Escape:
         emit doubleClicked();
         break;

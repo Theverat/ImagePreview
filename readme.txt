@@ -5,6 +5,7 @@ Keyboard Shortcuts:
 - Del: remove image (you get asked if you want to restore images when closing the program)
 - R: rotate image 90° clockwise. 
 - F11/Esc: toggle fullscreen
+- F: fit image in view
 
 Mouse Shortcuts:
 - Rightclick: show image 1:1 (100% size)
