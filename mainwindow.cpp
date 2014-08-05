@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     scene->setBackgroundBrush(QBrush(Qt::black));
     ui->graphicsView->setAcceptDrops(true);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-    ui->graphicsView->setStyleSheet( "QGraphicsView { border-style: none; }" );
     ui->graphicsView->showHelp();
     
     //initialize imageHandler

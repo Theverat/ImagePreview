@@ -30,11 +30,11 @@ void GraphicsView::init() {
 }
 
 void GraphicsView::changeImage(QImage image) {
-    scene()->clear(); 
+    scene()->clear();
     currentImage = scene()->addPixmap(QPixmap::fromImage(image));
     
     //when switching between zoomed-in images of the same size, the
-    //zoom should not reset. Also, if the image is smaller than the 
+    //zoom should not reset. Also, if the image is smaller than the
     //graphicsscene it should not get "blown up" but stay at 1:1 size.
     if(image.width() != prevImageWidth || image.height() != prevImageHeight) {
         autoFit();
@@ -61,7 +61,7 @@ void GraphicsView::dragEnterEvent(QDragEnterEvent* event) {
 }
 
 void GraphicsView::dragMoveEvent(QDragMoveEvent* event) {
-     QGraphicsView::dragMoveEvent(event);
+    QGraphicsView::dragMoveEvent(event);
 }
 
 void GraphicsView::dropEvent(QDropEvent* event) {
@@ -195,9 +195,20 @@ void GraphicsView::fitImageInView() {
     
     //adapt scene's bounding rect to image
     scene()->setSceneRect(QRectF(0, 0, currentImage->pixmap().width(), currentImage->pixmap().height()));
+
     //fit scene into graphicsview
-    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-    
+    //deprecated because of hardcoded 2 pixel border
+    //  fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+
+    //fit scene into graphicsview - workaround from
+    //http://www.qtforum.org/article/35467/the-2px-border-problem-in-qgraphicsview.html
+    QTransform matrix(1,0,0,0,1,0,0,0,1);
+    qreal xscale = this->width() / this->sceneRect().width();
+    qreal yscale = this->height() / this->sceneRect().height();
+    xscale = yscale = qMin(xscale,yscale);
+    matrix.scale(xscale,yscale);
+    this->setTransform(matrix);
+
     //compute current scaleFactor and corresponding wheel position
     double width = (double)scene()->width() / (double)this->width();
     double height = (double)scene()->height() / (double)this->height();
@@ -253,7 +264,7 @@ void GraphicsView::showHelp() {
         }
         
         helpTextItem = scene()->addSimpleText(readmeText);
-        helpTextItem->setBrush(QColor(255, 255, 255)); 
+        helpTextItem->setBrush(QColor(255, 255, 255));
     }
 }
 
