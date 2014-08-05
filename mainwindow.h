@@ -34,6 +34,7 @@ private slots:
     void toggleFullscreen();
     void dragToFolder();
     void setZoom();
+    void displayHelp();
 };
 
 #endif // MAINWINDOW_H

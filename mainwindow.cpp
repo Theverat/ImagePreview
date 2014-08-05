@@ -3,6 +3,7 @@
 #include "graphicsscene.h"
 #include "convertimagesdialog.h"
 #include "restoretrashdialog.h"
+#include "helpdialog.h"
 #include "cursormanager.h"
 
 #include <QFileInfo>
@@ -59,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //reset/fit buttons
     connect(ui->pushButton_fitIntoView, SIGNAL(clicked()), ui->graphicsView, SLOT(fitImageInView()));
     connect(ui->pushButton_resetZoom, SIGNAL(clicked()), ui->graphicsView, SLOT(resetImageScale()));
+    //help button
+    connect(ui->pushButton_help, SIGNAL(clicked()), this, SLOT(displayHelp()));
     
     //read last window position from registry
     readPositionSettings();
@@ -242,4 +245,9 @@ void MainWindow::readPositionSettings()
         showMaximized();
     
     qsettings.endGroup();
+}
+
+void MainWindow::displayHelp() {
+    HelpDialog *dialog = new HelpDialog(this);
+    dialog->show();
 }
