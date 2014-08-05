@@ -1,9 +1,12 @@
 #include "graphicsview.h"
+
 #include <QMimeData>
 #include <QDropEvent>
 #include <QApplication>
 #include <QGraphicsPixmapItem>
 #include <QTextStream>
+#include <QLabel>
+#include <QMovie>
 
 #include <math.h>
 #include <iostream>
@@ -32,7 +35,7 @@ void GraphicsView::init() {
 void GraphicsView::changeImage(QImage image) {
     scene()->clear();
     currentImage = scene()->addPixmap(QPixmap::fromImage(image));
-    
+
     //when switching between zoomed-in images of the same size, the
     //zoom should not reset. Also, if the image is smaller than the
     //graphicsscene it should not get "blown up" but stay at 1:1 size.
@@ -42,6 +45,23 @@ void GraphicsView::changeImage(QImage image) {
     
     prevImageWidth = image.width();
     prevImageHeight = image.height();
+}
+
+void GraphicsView::changeImage(QMovie *gif, QImage firstFrame) {
+    scene()->clear();
+
+    currentImage = scene()->addPixmap(QPixmap::fromImage(firstFrame));
+    currentImage->hide();
+
+    QLabel *gif_anim = new QLabel();
+    gif_anim->setMovie(gif);
+    gif->start();
+    scene()->addWidget(gif_anim);
+
+    autoFit();
+
+    prevImageWidth = 0;
+    prevImageHeight = 0;
 }
 
 void GraphicsView::autoFit() {

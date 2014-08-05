@@ -5,8 +5,8 @@
 ConvertImagesDialog::ConvertImagesDialog(QWidget *parent, ImageHandler *imageHandler, QList<QUrl> urls) :
     QDialog(parent),
     ui(new Ui::ConvertImagesDialog),
-    imageHandler(imageHandler),
-    images(urls)
+    images(urls),
+    imageHandler(imageHandler)
 {
     ui->setupUi(this);
     

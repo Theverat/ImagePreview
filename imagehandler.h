@@ -39,7 +39,6 @@ public slots:
     void next();
     void previous();
     void save();
-    void convertMultiple();
     void deleteCurrent();
     void rotateCurrent();
     

@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QImageReader>
+#include <QMovie>
 
 #include <iostream>
 
@@ -24,23 +26,33 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
         throw "[load] invalid url!";
         return false;
     }
-    
-    //load image
-    image = QImage(url.toLocalFile());
-    
+
+    QImageReader reader(url.toLocalFile());
+
+    image = reader.read();
+
     if(image.isNull() && !suppressErrors) {
         QMessageBox::information(parent, "Error while loading image",
-                                 "Image not loaded!\nMost likely the image format is not supported.");
-        
+                                 "Image not loaded!\nError: " + reader.errorString());
         return false;
     }
-    
+
+    if(reader.supportsAnimation()) {
+        //animated gif
+
+        QMovie *gif = new QMovie(url.toLocalFile());
+        view->changeImage(gif, image);
+    }
+    else {
+        //normal image
+
+        //display the image in the graphicsview
+        view->changeImage(image);
+    }
+
     //store the path the image was loaded from (for saving later)
     imageUrl = url;
     rotated = false;
-    
-    //display the image in the graphicsview
-    view->changeImage(image);
 
     //add the image file to the fileSystemWatcher
     fileSystemWatcher.addPath(url.toLocalFile());
@@ -119,7 +131,7 @@ void ImageHandler::reloadModifiedImage(QString path) {
 //returns a QStringList that contains all names of images in url (e.g. "test.png", "test2.png")
 QStringList ImageHandler::getImagesInDir(QUrl url) {
     QStringList nameFilter;
-    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb";
+    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
     
     QDir directory(url.toLocalFile());
     
@@ -148,7 +160,7 @@ void ImageHandler::save() {
                                            "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
     
     //if saving process was aborted
-    if(!url.isValid())
+    if(!url.isValid() || url.toLocalFile().isEmpty())
         return;
     
     QString path = url.toLocalFile();
@@ -169,10 +181,6 @@ void ImageHandler::save() {
     save(path, quality);
 
     CursorManager::restoreCursorVisibility();
-}
-
-void ImageHandler::convertMultiple() {
-    
 }
 
 void ImageHandler::deleteCurrent() {

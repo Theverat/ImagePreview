@@ -19,6 +19,7 @@ public:
     void wheelEvent(QWheelEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void changeImage(QImage image);
+    void changeImage(QMovie *gif, QImage firstFrame);
     double getScaleFactor();
     void fitImageInView();
     void autoFit();
