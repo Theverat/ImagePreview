@@ -153,7 +153,7 @@ void MainWindow::convertImages() {
     QList<QUrl> urls = QFileDialog::getOpenFileUrls(this,
                                                     "Select Images to Convert",
                                                     imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename),
-                                                    "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm *.psd *.psb)");
+                                                    "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm *.psd *.psb *.gif)");
     
     if(urls.size() == 0)
         return;

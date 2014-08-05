@@ -39,13 +39,11 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
 
     if(reader.supportsAnimation()) {
         //animated gif
-
         QMovie *gif = new QMovie(url.toLocalFile());
         view->changeImage(gif, image);
     }
     else {
         //normal image
-
         //display the image in the graphicsview
         view->changeImage(image);
     }

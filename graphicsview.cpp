@@ -49,7 +49,6 @@ void GraphicsView::changeImage(QImage image) {
 
 void GraphicsView::changeImage(QMovie *gif, QImage firstFrame) {
     scene()->clear();
-
     currentImage = scene()->addPixmap(QPixmap::fromImage(firstFrame));
     currentImage->hide();
 
