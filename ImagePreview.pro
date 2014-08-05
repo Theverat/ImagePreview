@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     convertimagesdialog.cpp \
     trashhandler.cpp \
     trashedfile.cpp \
-    restoretrashdialog.cpp
+    restoretrashdialog.cpp \
+    cursormanager.cpp
 
 HEADERS  += mainwindow.h \
     graphicsscene.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     convertimagesdialog.h \
     trashhandler.h \
     trashedfile.h \
-    restoretrashdialog.h
+    restoretrashdialog.h \
+    cursormanager.h
 
 FORMS    += mainwindow.ui \
     convertimagesdialog.ui \

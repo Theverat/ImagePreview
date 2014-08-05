@@ -45,9 +45,10 @@ void GraphicsView::changeImage(QImage image) {
 }
 
 void GraphicsView::autoFit() {
-    QPixmap image = currentImage->pixmap();
+    int width = currentImage->pixmap().width();
+    int height = currentImage->pixmap().height();
     
-    if(image.width() < this->width() && image.height() < this->height()) {
+    if(width < this->width() && height < this->height()) {
         resetImageScale();
     }
     else {
@@ -97,6 +98,9 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
         emit rotatePressed();
         break;
     case Qt::Key_Escape:
+        emit doubleClicked();
+        break;
+    case Qt::Key_F11:
         emit doubleClicked();
         break;
     case Qt::Key_Delete:

@@ -2,6 +2,9 @@ Keyboard Shortcuts:
 - Left/right arrow keys: previous/next image in current folder
 - Ctrl+S: save image (to different location, convert to different format etc.)
 - Ctrl+C: convert images
+- Del: remove image (you get asked if you want to restore images when closing the program)
+- R: rotate image 90° clockwise. 
+- F11/Esc: toggle fullscreen
 
 Mouse Shortcuts:
 - Rightclick: show image 1:1 (100% size)

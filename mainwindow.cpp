@@ -3,6 +3,8 @@
 #include "graphicsscene.h"
 #include "convertimagesdialog.h"
 #include "restoretrashdialog.h"
+#include "cursormanager.h"
+
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene->setBackgroundBrush(QBrush(Qt::black));
     ui->graphicsView->setAcceptDrops(true);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView->setStyleSheet( "QGraphicsView { border-style: none; }" );
     ui->graphicsView->showHelp();
     
     //initialize imageHandler
@@ -60,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     
     //should not start as fullscreen
     this->setWindowState(Qt::WindowNoState);
+    CursorManager::showCursor();
     
     //if the program was opened via "open with" by the OS, extract the image path from the arguments
     QStringList args = QCoreApplication::arguments();
@@ -164,14 +168,21 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
+    CursorManager::showCursor();
+
     //trash handling
     if(!imageHandler->getTrashHandler()->isEmpty()) {
         RestoreTrashDialog *dialog = new RestoreTrashDialog(this, imageHandler->getTrashHandler());
         if(dialog->exec() == 0) {
             //"cancel" was pressed -> mainwindow should not close
             event->ignore();
+            return;
         }
     }
+
+    //exit fullscreen
+    if(isFullScreen())
+        toggleFullscreen();
 
     writePositionSettings();
 }
@@ -180,13 +191,13 @@ void MainWindow::toggleFullscreen() {
     if(isFullScreen()) {
         ui->widget_infobar->show();
         this->setWindowState(Qt::WindowNoState);
-        QApplication::restoreOverrideCursor();
+        CursorManager::showCursor();
     }
     else
     {
         ui->widget_infobar->hide();
         this->setWindowState(Qt::WindowFullScreen);
-        QApplication::setOverrideCursor(Qt::BlankCursor);
+        CursorManager::hideCursor();
     }
     
     ui->graphicsView->autoFit();

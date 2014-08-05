@@ -1,5 +1,7 @@
 #include "imagehandler.h"
 #include "convertimagesdialog.h"
+#include "cursormanager.h"
+
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -83,12 +85,16 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
 
     //if image was rotated, ask if it should be saved
     if(rotated) {
+        CursorManager::showCursor();
+
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(parent, "Save Rotated Image", "The image was rotated. Do you want to save it?",
-                                      QMessageBox::Yes|QMessageBox::No);
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
         if (reply == QMessageBox::Yes) {
             save(imageUrl.toLocalFile(), 98);
         }
+
+        CursorManager::restoreCursorVisibility();
     }
     
     //remove current image from fileSystemWatcher
@@ -134,6 +140,8 @@ void ImageHandler::save(QString path, int quality) {
 }
 
 void ImageHandler::save() {
+    CursorManager::showCursor();
+
     QUrl url = QFileDialog::getSaveFileUrl(parent,
                                            "Save as",
                                            imageUrl,
@@ -159,6 +167,8 @@ void ImageHandler::save() {
     }
     
     save(path, quality);
+
+    CursorManager::restoreCursorVisibility();
 }
 
 void ImageHandler::convertMultiple() {
@@ -185,6 +195,8 @@ void ImageHandler::deleteCurrent() {
         //could not move image to trash
         //ask user if file should be removed directly
 
+        CursorManager::showCursor();
+
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(parent, "Error", "Could not move image to trash!\nDo you want to delete it directly?",
                                       QMessageBox::Yes|QMessageBox::No);
@@ -192,6 +204,8 @@ void ImageHandler::deleteCurrent() {
             QFile file(fileToTrash.toLocalFile());
             file.remove();
         }
+
+        CursorManager::restoreCursorVisibility();
     }
 }
 
