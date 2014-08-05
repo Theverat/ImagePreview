@@ -56,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_drag, SIGNAL(pressed()), this, SLOT(dragToFolder()));
     //set scale (double spinbox)
     connect(ui->doubleSpinBox_scale, SIGNAL(editingFinished()), this, SLOT(setZoom()));
+    //reset/fit buttons
+    connect(ui->pushButton_fitIntoView, SIGNAL(clicked()), ui->graphicsView, SLOT(fitImageInView()));
+    connect(ui->pushButton_resetZoom, SIGNAL(clicked()), ui->graphicsView, SLOT(resetImageScale()));
     
     //read last window position from registry
     readPositionSettings();
@@ -117,9 +120,9 @@ void MainWindow::displayImageInfo() {
     QFileInfo fileInfo(imageUrl.toLocalFile());
     qint64 sizeBytes = fileInfo.size();
     double sizeKilobytes = (double)sizeBytes / 1024.0;
-    
-    ui->label_path->setText(imageUrl.toLocalFile());
-    ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()));
+
+    ui->graphicsView->setToolTip(imageUrl.toLocalFile());
+    ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()) + " px");
     ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
     
     ui->doubleSpinBox_scale->setValue(ui->graphicsView->getScaleFactor() * 100.0);

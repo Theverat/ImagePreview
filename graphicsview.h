@@ -21,9 +21,7 @@ public:
     void changeImage(QImage image);
     void changeImage(QMovie *gif, QImage firstFrame);
     double getScaleFactor();
-    void fitImageInView();
     void autoFit();
-    void resetImageScale();
     void showHelp();
     void showText(QString text, QColor color = QColor(255, 255, 255));
     
@@ -44,6 +42,8 @@ private:
     
 public slots:
     void zoom(double scale);
+    void fitImageInView();
+    void resetImageScale();
     
 signals:
     void singleImageDropped(QUrl url);
