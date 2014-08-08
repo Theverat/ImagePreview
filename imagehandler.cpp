@@ -1,6 +1,7 @@
 #include "imagehandler.h"
 #include "convertimagesdialog.h"
 #include "cursormanager.h"
+#include "exifparser.h"
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -44,6 +45,43 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     }
     else {
         //normal image
+        //check exif data for image rotation
+        ExifParser exifParser(url);
+        if(exifParser.isValidExifData()) {
+            //rotate image
+
+            QTransform transform;
+
+            switch(exifParser.getOrientation()) {
+            case 1:
+                break;
+            case 2:
+                image = image.mirrored(true, false);
+                break;
+            case 3:
+                transform.rotate(180);
+                break;
+            case 4:
+                image = image.mirrored(false, true);
+                break;
+            case 5:
+                transform = transform.transposed();
+                break;
+            case 6:
+                transform.rotate(90);
+                break;
+            case 7:
+                transform.rotate(-90);
+                image = image.mirrored(false, true);
+                break;
+            case 8:
+                transform.rotate(270);
+                break;
+            }
+
+            image = image.transformed(transform);
+        }
+
         //display the image in the graphicsview
         view->changeImage(image);
     }
@@ -98,7 +136,9 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
         CursorManager::showCursor();
 
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(parent, "Save Rotated Image", "The image was rotated. Do you want to save it?",
+        reply = QMessageBox::question(parent, "Save Rotated Image",
+                                      "The image was rotated. Do you want to save it?\n\
+                                      WARNING: this will delete EXIF data!",
                                       QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
         if (reply == QMessageBox::Yes) {
             save(imageUrl.toLocalFile(), 98);
@@ -126,10 +166,11 @@ void ImageHandler::reloadModifiedImage(QString path) {
     load(QUrl::fromLocalFile(path));
 }
 
-//returns a QStringList that contains all names of images in url (e.g. "test.png", "test2.png")
+//returns a QStringList that contains all names of images in the folder
 QStringList ImageHandler::getImagesInDir(QUrl url) {
     QStringList nameFilter;
-    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
+    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm"
+               << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
     
     QDir directory(url.toLocalFile());
     
@@ -204,7 +245,8 @@ void ImageHandler::deleteCurrent() {
         CursorManager::showCursor();
 
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(parent, "Error", "Could not move image to trash!\nDo you want to delete it directly?",
+        reply = QMessageBox::question(parent, "Error",
+                                      "Could not move image to trash!\nDo you want to delete it directly?",
                                       QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             QFile file(fileToTrash.toLocalFile());

@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     trashedfile.cpp \
     restoretrashdialog.cpp \
     cursormanager.cpp \
-    helpdialog.cpp
+    helpdialog.cpp \
+    exifparser.cpp
 
 HEADERS  += mainwindow.h \
     graphicsscene.h \
@@ -33,7 +34,8 @@ HEADERS  += mainwindow.h \
     trashedfile.h \
     restoretrashdialog.h \
     cursormanager.h \
-    helpdialog.h
+    helpdialog.h \
+    exifparser.h
 
 FORMS    += mainwindow.ui \
     convertimagesdialog.ui \

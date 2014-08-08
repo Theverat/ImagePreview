@@ -19,6 +19,9 @@ bool TrashHandler::moveToTrash(QUrl url) {
     if(file.exists()) {
         file.rename(trashUrl.toLocalFile());
     }
+    else {
+        return false;
+    }
 
     return true;
 }
@@ -46,6 +49,9 @@ bool TrashHandler::restore(int index) {
     QFile file(trashedFile.getUrl().toLocalFile());
     if(file.exists()) {
         file.rename(trashedFile.getOriginalUrl().toLocalFile());
+    }
+    else {
+        return false;
     }
 
     trash.removeAt(index);
