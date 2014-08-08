@@ -46,6 +46,7 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     else {
         //normal image
         //check exif data for image rotation
+
         ExifParser exifParser(url);
         if(exifParser.isValidExifData()) {
             //rotate image
