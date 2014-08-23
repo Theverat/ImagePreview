@@ -124,7 +124,6 @@ void MainWindow::displayImageInfo() {
     qint64 sizeBytes = fileInfo.size();
     double sizeKilobytes = (double)sizeBytes / 1024.0;
 
-    ui->graphicsView->setToolTip(imageUrl.toLocalFile());
     ui->label_size->setText(QString::number(image.width()) + " x " + QString::number(image.height()) + " px");
     ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
     

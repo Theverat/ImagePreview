@@ -211,7 +211,7 @@
     <item>
      <widget class="GraphicsView" name="graphicsView">
       <property name="toolTip">
-       <string>No image loaded</string>
+       <string/>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
