@@ -170,8 +170,8 @@ void ImageHandler::reloadModifiedImage(QString path) {
 //returns a QStringList that contains all names of images in the folder
 QStringList ImageHandler::getImagesInDir(QUrl url) {
     QStringList nameFilter;
-    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.ppm"
-               << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
+    nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.tif"
+               << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
     
     QDir directory(url.toLocalFile());
     
@@ -197,7 +197,7 @@ void ImageHandler::save() {
     QUrl url = QFileDialog::getSaveFileUrl(parent,
                                            "Save as",
                                            imageUrl,
-                                           "Image Formats (*.png *.jpg *.jpeg *.tiff *.ppm *.bmp *.xpm)");
+                                           "Image Formats (*.png *.jpg *.jpeg *.tiff *.tif *.ppm *.bmp *.xpm)");
     
     //if saving process was aborted
     if(!url.isValid() || url.toLocalFile().isEmpty())
