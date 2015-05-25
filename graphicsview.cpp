@@ -7,6 +7,8 @@
 #include <QTextStream>
 #include <QLabel>
 #include <QMovie>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrintPreviewDialog>
 
 #include <math.h>
 #include <iostream>
@@ -128,7 +130,23 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_Delete:
         emit deletePressed();
         break;
+    case Qt::Key_P:
+        //test if control is pressed as well
+        if(QApplication::keyboardModifiers() & Qt::ControlModifier) {
+            //show print dialog
+            QPrinter printer(QPrinter::HighResolution);
+            
+            QPrintPreviewDialog preview(&printer);
+            connect(&preview, SIGNAL(paintRequested(QPrinter*)), this, SLOT(printPreview(QPrinter*)));
+            preview.exec();
+        }
     }
+}
+
+void GraphicsView::printPreview(QPrinter *printer) {
+    //render the graphicsscene to show in print preview dialog
+    QPainter painter(printer);
+    this->scene()->render(&painter);
 }
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {

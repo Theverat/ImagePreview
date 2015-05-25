@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QUrl>
+#include <QtPrintSupport/QPrinter>
 
 class GraphicsView : public QGraphicsView
 {
@@ -57,6 +58,9 @@ signals:
     void doubleClicked();
     void deletePressed();
     void rotatePressed();
+    
+private slots:
+    void printPreview(QPrinter *printer);
 };
 
 #endif // GRAPHICSVIEW_H
