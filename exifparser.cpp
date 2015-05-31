@@ -19,7 +19,7 @@ ExifParser::ExifParser(QUrl imageUrl) {
     //for now, only jpeg/jpg images are supported
     QFileInfo fileInfo(imageUrl.toLocalFile());
     if(fileInfo.suffix().toLower() != "jpg" && fileInfo.suffix().toLower() != "jpeg") {
-        std::cout << "suffix not \"jpg\" or \"jpeg\". No EXIF data available." << std::endl;
+        // // std::cout << "suffix not \"jpg\" or \"jpeg\". No EXIF data available." << std::endl;
         isValid = false;
         return;
     }
@@ -42,31 +42,31 @@ ExifParser::ExifParser(QUrl imageUrl) {
 
     //test if jpeg image is intact (2 bytes)
     if(compareBytes(buffer, markerJpegStart, 0)) {
-        std::cout << "intact jpeg image" << std::endl;
+        // std::cout << "intact jpeg image" << std::endl;
     }
     else {
-        std::cout << "not a jpeg image or corrupt image!" << std::endl;
+        // std::cout << "not a jpeg image or corrupt image!" << std::endl;
         isValid = false;
         return;
     }
 
     //find exif begin marker FF-E1 (2 bytes)
     exifStartPos = buffer.indexOf(markerExifStart);
-    std::cout << "EXIF marker found at: " << exifStartPos << std::endl;
+    // std::cout << "EXIF marker found at: " << exifStartPos << std::endl;
 
     //get length of exif data (2 bytes)
     exifLengthPos = exifStartPos + 2;
     exifLength = readUnsignedShort(buffer.mid(exifLengthPos, 2));
-    std::cout << "EXIF data is " << exifLength << " bytes long" << std::endl;
+    // std::cout << "EXIF data is " << exifLength << " bytes long" << std::endl;
 
     //check if it contains the code "Exif" (6 bytes)
     exifCodePos = exifLengthPos + 2;
 
     if(compareBytes(buffer, exifCode, exifCodePos)) {
-        std::cout << "contains EXIF data" << std::endl;
+        // std::cout << "contains EXIF data" << std::endl;
     }
     else {
-        std::cout << "does not contain EXIF data" << std::endl;
+        // std::cout << "does not contain EXIF data" << std::endl;
         isValid = false;
         return;
     }
@@ -76,11 +76,11 @@ ExifParser::ExifParser(QUrl imageUrl) {
 
     //check if intel or motorola format is used (2 bytes in TIFF header)
     if(compareBytes(buffer, intelFormatCode, tiffHeaderPos)) {
-        std::cout << "intel format" << std::endl;
+        // std::cout << "intel format" << std::endl;
         format = INTEL;
     }
     else if(compareBytes(buffer, motorolaFormatCode, tiffHeaderPos)) {
-        std::cout << "motorola format" << std::endl;
+        // std::cout << "motorola format" << std::endl;
         format = MOTOROLA;
     }
 
@@ -90,7 +90,7 @@ ExifParser::ExifParser(QUrl imageUrl) {
     //get amount of EXIF tags (2 bytes)
     tagAmountPos = tiffHeaderPos + 8;
     unsigned short tagAmount = readUnsignedShort(buffer.mid(tagAmountPos, 2));
-    std::cout << "tag amount: " << tagAmount << std::endl;
+    // std::cout << "tag amount: " << tagAmount << std::endl;
 
     //tags are always 12 bytes long, get their positions
     tagPositions = std::vector<unsigned short>(tagAmount);
@@ -100,7 +100,7 @@ ExifParser::ExifParser(QUrl imageUrl) {
 
     //read tags
     for(int i = 0; i < tagAmount; i++) {
-        std::cout << "    tag " << i + 1 << ": " << readTag(tagPositions.at(i), buffer).toStdString() << std::endl;
+        // std::cout << "    tag " << i + 1 << ": " << readTag(tagPositions.at(i), buffer).toStdString() << std::endl;
     }
 
     isValid = true;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>877</width>
-    <height>626</height>
+    <width>969</width>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -231,6 +231,290 @@
       <property name="renderHints">
        <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
       </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="horizontalWidget" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>(Show x images for y seconds)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_img">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>for</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_sec">
+         <property name="suffix">
+          <string>s</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>30</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_img_2">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>for</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_sec_2">
+         <property name="suffix">
+          <string>s</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>60</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_img_3">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>for</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_sec_3">
+         <property name="suffix">
+          <string>s</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>120</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_img_4">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+         <property name="displayIntegerBase">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>for</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_0_sec_4">
+         <property name="suffix">
+          <string>s</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>600</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>The rest for</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_interval_rest">
+         <property name="suffix">
+          <string>s</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>600</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_startSlideshow">
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+
+padding: 2px;
+
+color: #fff;
+background-color: rgb(88, 88, 88);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #888, stop: 1 #222);
+*/
+
+border: 1px solid;
+border-color: #777;
+border-radius: 3px;
+
+height: 16px;
+}
+
+QPushButton::hover {
+
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #a6a6a6, stop: 0.08 #7f7f7f,
+stop: 0.39999 #68717b, stop: 0.4 #4a5e75,
+stop: 0.9 #4c4c4c, stop: 1 #333333);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
+*/
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_slideshowStats">
+         <property name="text">
+          <string>Next image in 0s</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
@@ -542,6 +826,55 @@ radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
         </spacer>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_slideshow">
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+
+padding: 2px;
+
+color: #fff;
+background-color: rgb(88, 88, 88);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #888, stop: 1 #222);
+*/
+
+border: 1px solid;
+border-color: #777;
+border-radius: 3px;
+
+height: 16px;
+}
+
+QPushButton::hover {
+
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #a6a6a6, stop: 0.08 #7f7f7f,
+stop: 0.39999 #68717b, stop: 0.4 #4a5e75,
+stop: 0.9 #4c4c4c, stop: 1 #333333);
+
+/*
+background: qradialgradient(cx: 0.5, cy: -0.3,
+fx: 0.5, fy: -0.3,
+radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
+*/
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Configure Slideshow</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButton_drag">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -692,5 +1025,22 @@ radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_slideshow</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>horizontalWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>611</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>851</x>
+     <y>592</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

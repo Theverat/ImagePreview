@@ -62,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_resetZoom, SIGNAL(clicked()), ui->graphicsView, SLOT(resetImageScale()));
     //help button
     connect(ui->pushButton_help, SIGNAL(clicked()), this, SLOT(displayHelp()));
+    //slideshow
+    connect(ui->pushButton_startSlideshow, SIGNAL(clicked()), this, SLOT(startSlideshow()));
     
     //read last window position from registry
     readPositionSettings();
@@ -249,4 +251,71 @@ void MainWindow::readPositionSettings()
 void MainWindow::displayHelp() {
     HelpDialog *dialog = new HelpDialog(this);
     dialog->show();
+}
+
+void MainWindow::startSlideshow() {
+    this->slideshowIntervals = QList<int>();
+    this->slideshowImageCount = QList<int>();
+    
+    slideshowIntervals.append(ui->spinBox_interval_0_sec->value() * 1000);
+    slideshowImageCount.append(ui->spinBox_interval_0_img->value());
+    
+    slideshowIntervals.append(ui->spinBox_interval_0_sec_2->value() * 1000);
+    slideshowImageCount.append(ui->spinBox_interval_0_img_2->value());
+    
+    slideshowIntervals.append(ui->spinBox_interval_0_sec_2->value() * 1000);
+    slideshowImageCount.append(ui->spinBox_interval_0_img_2->value());
+    
+    slideshowIntervals.append(ui->spinBox_interval_0_sec_3->value() * 1000);
+    slideshowImageCount.append(ui->spinBox_interval_0_img_3->value());
+    
+    slideshowIntervals.append(ui->spinBox_interval_0_sec_4->value() * 1000);
+    slideshowImageCount.append(ui->spinBox_interval_0_img_4->value());
+    
+    //this->slideshowTimer = QTimer();
+    connect(&slideshowTimer, SIGNAL(timeout()), this, SLOT(slideshowNextImage()));
+    connect(&updateStatsTimer, SIGNAL(timeout()), this, SLOT(updateSlideshowStats()));
+    updateStatsTimer.start(1000);
+    
+    this->slideshowNextImage();
+}
+
+
+void MainWindow::slideshowNextImage() {
+    // don't load image on first call of this function
+    if(slideshowTimer.isActive()) {
+        this->slideshowTimer.stop();
+        this->imageHandler->next();
+    }
+    
+    if(slideshowImageCount.size() > 0 && slideshowImageCount.at(0) == 0) {
+        // delete list entries
+        slideshowImageCount.removeAt(0);
+        slideshowIntervals.removeAt(0);
+    }
+    
+    if(slideshowImageCount.size() > 0) {
+        // Did not reach the end of configurable intervals yet
+        slideshowImageCount[0] -= 1;
+        std::cout << "slideshowImageCount: " << slideshowImageCount[0] << std::endl;
+        currentInterval = slideshowIntervals.at(0);
+    }
+    else {
+        // Reached end of configurable intervals
+        currentInterval = ui->spinBox_interval_rest->value() * 1000;
+    }
+    
+    std::cout << "currentInterval: " << currentInterval / 1000 << std::endl;
+    
+    remainingInterval = currentInterval;
+    this->slideshowTimer.start(currentInterval);
+}
+
+void MainWindow::updateSlideshowStats() {
+    if(remainingInterval < 0)
+        remainingInterval = 0;
+    
+    QString text = QString("Next image in %1s").arg(remainingInterval / 1000);
+    ui->label_slideshowStats->setText(text);
+    remainingInterval -= 1000;
 }

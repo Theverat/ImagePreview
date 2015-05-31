@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
+#include <QList>
 #include "imagehandler.h"
 
 namespace Ui {
@@ -22,6 +24,12 @@ private:
     Ui::MainWindow *ui;
     QImage currentImage;
     ImageHandler *imageHandler;
+    QTimer slideshowTimer;
+    QTimer updateStatsTimer;
+    QList<int> slideshowIntervals;
+    QList<int> slideshowImageCount;
+    int currentInterval;
+    int remainingInterval;
     
     void writePositionSettings();
     void readPositionSettings();
@@ -35,6 +43,9 @@ private slots:
     void dragToFolder();
     void setZoom();
     void displayHelp();
+    void startSlideshow();
+    void slideshowNextImage();
+    void updateSlideshowStats();
 };
 
 #endif // MAINWINDOW_H
