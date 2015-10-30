@@ -34,7 +34,7 @@ ExifParser::ExifParser(QUrl imageUrl) {
 
     QDataStream input(&file);
     QByteArray buffer;
-    int length = 65536; //theoretical max size of jpeg header (bytes)
+    const int length = 65536; //theoretical max size of jpeg header (bytes)
 
     char temp[length];
     input.readRawData(temp, length);
