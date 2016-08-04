@@ -70,6 +70,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowState(Qt::WindowNoState);
     CursorManager::showCursor();
     
+    // Show the window to avoid bug where image is not scaled properly when passed as argument
+    QMainWindow::show();
+    
     //if the program was opened via "open with" by the OS, extract the image path from the arguments
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 1) {
