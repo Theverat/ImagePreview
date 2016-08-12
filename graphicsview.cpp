@@ -34,7 +34,7 @@ void GraphicsView::init() {
     helpTextItem = 0;
 }
 
-void GraphicsView::changeImage(QImage image) {
+void GraphicsView::changeImage(const QImage& image) {
     scene()->clear();
     currentImage = scene()->addPixmap(QPixmap::fromImage(image));
 
@@ -49,7 +49,7 @@ void GraphicsView::changeImage(QImage image) {
     prevImageHeight = image.height();
 }
 
-void GraphicsView::changeImage(QMovie *gif, QImage firstFrame) {
+void GraphicsView::changeImage(QMovie *gif, const QImage& firstFrame) {
     scene()->clear();
     currentImage = scene()->addPixmap(QPixmap::fromImage(firstFrame));
     currentImage->hide();
@@ -260,28 +260,28 @@ void GraphicsView::fitImageInView() {
     choosePixmapTransform();
 }
 
-double GraphicsView::calcScaleFactor(double wheelPos) {
+double GraphicsView::calcScaleFactor(double wheelPos) const {
     // f(x) = c * a^x   where a = 2^(1/8) and c = (0.25 / a^24)
     // simplified: f(x) = (0.25 / (2^(1/8))^(24)) * (2^(1/8))^x
     
-    double a = pow(2.0, (1.0 / 8.0));
-    double c = 0.25 / pow(a, 24.0);
+    const double a = pow(2.0, (1.0 / 8.0));
+    const double c = 0.25 / pow(a, 24.0);
     
     return c * pow(a, wheelPos);
 }
 
-double GraphicsView::calcWheelPosition(double scaleFac) {
+double GraphicsView::calcWheelPosition(double scaleFac) const {
     //calculates x to a given y for the function in calcScaleFactor()
-    double a = pow(2.0, (1.0 / 8.0));
-    double c = 0.25 / pow(a, 24.0);
+    const double a = pow(2.0, (1.0 / 8.0));
+    const double c = 0.25 / pow(a, 24.0);
     
-    double log_a = log(a);
-    double log_c = log(c);
+    const double log_a = log(a);
+    const double log_c = log(c);
     
     return (log(scaleFac) - log_c) / log_a;
 }
 
-double GraphicsView::getScaleFactor() {
+double GraphicsView::getScaleFactor() const {
     return scaleFactor;
 }
 

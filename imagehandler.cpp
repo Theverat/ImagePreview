@@ -178,15 +178,15 @@ QStringList ImageHandler::getImagesInDir(QUrl url) {
     return directory.entryList(nameFilter, QDir::Files);
 }
 
-QImage ImageHandler::getImage() {
+const QImage& ImageHandler::getImage() const {
     return image;
 }
 
-QUrl ImageHandler::getImageUrl() {
+QUrl ImageHandler::getImageUrl() const {
     return imageUrl;
 }
 
-void ImageHandler::save(QString path, int quality) {
+void ImageHandler::save(QString path, int quality) const {
     if(!image.save(path, 0, quality))
         QMessageBox::information(parent, "Error while saving Image", "Image not saved!");
 }

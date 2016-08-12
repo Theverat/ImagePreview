@@ -19,9 +19,9 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
-    void changeImage(QImage image);
-    void changeImage(QMovie *gif, QImage firstFrame);
-    double getScaleFactor();
+    void changeImage(const QImage &image);
+    void changeImage(QMovie *gif, const QImage& firstFrame);
+    double getScaleFactor() const;
     void autoFit();
     void showHelp();
     void showText(QString text, QColor color = QColor(255, 255, 255));
@@ -38,8 +38,8 @@ private:
     void zoom(int wheelAngle);
     void setScale();
     void choosePixmapTransform();
-    double calcScaleFactor(double wheelPos);
-    double calcWheelPosition(double scaleFac);
+    double calcScaleFactor(double wheelPos) const;
+    double calcWheelPosition(double scaleFac) const;
     
 public slots:
     void zoom(double scale);

@@ -19,7 +19,7 @@ ExifParser::ExifParser(QUrl imageUrl) {
     //for now, only jpeg/jpg images are supported
     QFileInfo fileInfo(imageUrl.toLocalFile());
     if(fileInfo.suffix().toLower() != "jpg" && fileInfo.suffix().toLower() != "jpeg") {
-        std::cout << "suffix not \"jpg\" or \"jpeg\". No EXIF data available." << std::endl;
+        //std::cout << "suffix not \"jpg\" or \"jpeg\". No EXIF data available." << std::endl;
         isValid = false;
         return;
     }

@@ -101,7 +101,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::initImageLoaded() {
-    QImage image = imageHandler->getImage();
+    const QImage& image = imageHandler->getImage();
     QUrl imageUrl = imageHandler->getImageUrl();
     
     if(image.isNull()) {
@@ -120,7 +120,7 @@ void MainWindow::initImageLoaded() {
 
 //creates the info text for the label and displays it
 void MainWindow::displayImageInfo() {
-    QImage image = imageHandler->getImage();
+    const QImage& image = imageHandler->getImage();
     QUrl imageUrl = imageHandler->getImageUrl();
     
     QFileInfo fileInfo(imageUrl.toLocalFile());

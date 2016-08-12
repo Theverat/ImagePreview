@@ -16,10 +16,10 @@ public:
     ImageHandler();
     ImageHandler(GraphicsView *view, QWidget *parent);
     bool load(QUrl url, bool suppressErrors = false);
-    QImage getImage();
-    QUrl getImageUrl();
-    void save(QString path, int quality = -1);
-    TrashHandler *getTrashHandler();
+    const QImage& getImage() const;
+    QUrl getImageUrl() const;
+    void save(QString path, int quality = -1) const;
+    TrashHandler* getTrashHandler();
 
 private:
     QWidget *parent;
