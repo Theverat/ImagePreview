@@ -15,6 +15,7 @@ class ImageHandler : public QObject
 public:
     ImageHandler();
     ImageHandler(GraphicsView *view, QWidget *parent);
+    void setFileQueue(QList<QUrl> queue);
     bool load(QUrl url, bool suppressErrors = false);
     const QImage& getImage() const;
     QUrl getImageUrl() const;
@@ -26,11 +27,12 @@ private:
     GraphicsView *view;
     QImage image;
     QUrl imageUrl;
+    QList<QUrl> fileQueue;
     QFileSystemWatcher fileSystemWatcher;
     TrashHandler trashHandler;
     bool rotated;
     
-    QStringList getImagesInDir(QUrl url);
+    QList<QUrl> getImagesInDir(QUrl url);
     void loadNeighbourImage(bool rightNeighbour);
 
 public slots:

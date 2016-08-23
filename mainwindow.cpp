@@ -76,6 +76,16 @@ MainWindow::MainWindow(QWidget *parent) :
     //if the program was opened via "open with" by the OS, extract the image path from the arguments
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 1) {
+        if(args.size() > 2) {
+            // More than one image selected - only cycles through images in selection,
+            // not all images in the directory
+            QList<QUrl> selection;
+            for(int i = 1; i < args.size(); ++i) {
+                selection.push_back(QUrl::fromLocalFile(args.at(i)));
+            }
+            imageHandler->setFileQueue(selection);
+        }
+        
         imageHandler->loadImage(QUrl::fromLocalFile(args.at(1)));
         
         if(!isFullScreen()) {

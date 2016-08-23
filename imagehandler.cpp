@@ -22,6 +22,10 @@ ImageHandler::ImageHandler(GraphicsView *view, QWidget *parent){
     connect(&fileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadModifiedImage(QString)));
 }
 
+void ImageHandler::setFileQueue(QList<QUrl> queue) {
+    fileQueue = queue;
+}
+
 bool ImageHandler::load(QUrl url, bool suppressErrors){
     if(!url.isValid()) {
         throw "[load] invalid url!";
@@ -111,14 +115,14 @@ void ImageHandler::previous(){
 }
 
 void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
-    QStringList images = getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename));
+    QList<QUrl> images = getImagesInDir(imageUrl.adjusted(QUrl::RemoveFilename));
     
     //if there are no images or just one, do nothing
     if(images.size() < 2)
         return;
     
-    QFileInfo fileInfo(imageUrl.toLocalFile());
-    int current = images.indexOf(QRegExp(QRegExp::escape(fileInfo.fileName())));
+    // Find out where we currently are in the list
+    int current = images.indexOf(imageUrl);
     
     //convert rightNeighbour to an int (left = -1, right = 1)
     int relativeIndex = -1;
@@ -152,8 +156,8 @@ void ImageHandler::loadNeighbourImage(bool rightNeighbour) {
     fileSystemWatcher.removePath(imageUrl.toLocalFile());
 
     //construct the new Url and load the file
-    QUrl neighbourUrl = QUrl::fromLocalFile(imageUrl.adjusted(QUrl::RemoveFilename).toLocalFile() + images.at(current));
-    load(neighbourUrl, true);
+    //QUrl neighbourUrl = QUrl::fromLocalFile(imageUrl.adjusted(QUrl::RemoveFilename).toLocalFile() + images.at(current));
+    load(images.at(current), true);
 }
 
 void ImageHandler::loadImage(QUrl url) {
@@ -168,14 +172,25 @@ void ImageHandler::reloadModifiedImage(QString path) {
 }
 
 //returns a QStringList that contains all names of images in the folder
-QStringList ImageHandler::getImagesInDir(QUrl url) {
+QList<QUrl> ImageHandler::getImagesInDir(QUrl url) {
     QStringList nameFilter;
     nameFilter << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.tif"
                << "*.ppm" << "*.bmp" << "*.xpm" << "*.psd" << "*.psb" << "*.gif";
     
-    QDir directory(url.toLocalFile());
-    
-    return directory.entryList(nameFilter, QDir::Files);
+    if(fileQueue.size() > 0) {
+        return fileQueue;
+    } else {
+        // Cycle through all images in the directory
+        QDir directory(url.toLocalFile());
+        // The entryList only contains filenames, not full paths
+        QStringList entryList = directory.entryList(nameFilter, QDir::Files);
+        // Construct a list of full QUrls
+        QList<QUrl> files;
+        for(int i = 0; i < entryList.size(); ++i) {
+            files.push_back(QUrl::fromLocalFile(url.toLocalFile() + entryList.at(i)));
+        }
+        return files;
+    }
 }
 
 const QImage& ImageHandler::getImage() const {
