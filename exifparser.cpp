@@ -13,8 +13,8 @@ ExifParser::ExifParser(QUrl imageUrl) {
     markerJpegStart = QByteArray::fromHex("FFD8");
     markerExifStart = QByteArray::fromHex("FFE1");
     exifCode = QByteArray::fromHex("457869660000");
-    intelFormatCode = QByteArray::fromHex("4949");
-    motorolaFormatCode = QByteArray::fromHex("4D4D");
+    intelFormatCode = QByteArray::fromHex("4949"); // little endian
+    motorolaFormatCode = QByteArray::fromHex("4D4D"); // big endian
 
     //for now, only jpeg/jpg images are supported
     QFileInfo fileInfo(imageUrl.toLocalFile());

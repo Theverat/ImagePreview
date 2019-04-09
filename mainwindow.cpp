@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect signals/slots
     //graphicsview drag and drop
     connect(ui->graphicsView, SIGNAL(singleImageDropped(QUrl)), imageHandler, SLOT(loadImage(QUrl)));
+    connect(ui->graphicsView, SIGNAL(multipleImagesDropped(QList<QUrl>)), this, SLOT(handleMultipleDropped(QList<QUrl>)));
     //keyboard shortcuts
     connect(ui->graphicsView, SIGNAL(keyLeftPressed()), imageHandler, SLOT(previous()));
     connect(ui->graphicsView, SIGNAL(keyRightPressed()), imageHandler, SLOT(next()));
@@ -262,4 +263,9 @@ void MainWindow::readPositionSettings()
 void MainWindow::displayHelp() {
     HelpDialog *dialog = new HelpDialog(this);
     dialog->show();
+}
+
+void MainWindow::handleMultipleDropped(QList<QUrl> urls) {
+    imageHandler->setFileQueue(urls);
+    imageHandler->loadImage(urls.at(0));
 }

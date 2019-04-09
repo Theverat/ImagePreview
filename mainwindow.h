@@ -35,6 +35,7 @@ private slots:
     void dragToFolder();
     void setZoom();
     void displayHelp();
+    void handleMultipleDropped(QList<QUrl> urls);
 };
 
 #endif // MAINWINDOW_H

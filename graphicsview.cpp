@@ -90,7 +90,11 @@ void GraphicsView::dropEvent(QDropEvent* event) {
     
     if(event->mimeData()->hasUrls()) {
         QList<QUrl> urls = event->mimeData()->urls();
-        emit singleImageDropped(urls.at(0));
+        if (urls.size() > 1) {
+            emit multipleImagesDropped(urls);
+        } else {
+            emit singleImageDropped(urls.at(0));
+        }
     }
 }
 
