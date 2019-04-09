@@ -9,6 +9,7 @@
 #include <QMovie>
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
+#include <QDebug>
 
 #include <math.h>
 #include <iostream>
@@ -158,7 +159,31 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
-    zoom(event->delta());
+    if (event->orientation() == Qt::Horizontal) {
+        event->ignore();
+        return;
+    }
+    
+    const QPoint numPixels = event->pixelDelta();
+    int delta = 0;
+    double speed = 1.0;
+    
+    if (!numPixels.isNull()) {
+        delta = numPixels.y();
+        speed = std::min(1.0, std::abs(delta) * 0.01);
+    } else {
+        delta = event->delta();
+    }
+    
+    if (delta > 0)
+        wheelPosition += speed;
+    else if (delta < 0)
+        wheelPosition -= speed;
+    
+    scaleFactor = calcScaleFactor(wheelPosition);
+    setScale();
+
+    event->accept();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event) {
