@@ -33,6 +33,7 @@ bool ImageHandler::load(QUrl url, bool suppressErrors){
     }
 
     QImageReader reader(url.toLocalFile());
+    reader.setAllocationLimit(2000);
 
     image = reader.read();
 
