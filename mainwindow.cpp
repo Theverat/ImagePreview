@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(controlCPressed()), this, SLOT(convertImages()));
     connect(ui->graphicsView, SIGNAL(deletePressed()), imageHandler, SLOT(deleteCurrent()));
     connect(ui->graphicsView, SIGNAL(rotatePressed()), imageHandler, SLOT(rotateCurrent()));
+    connect(ui->graphicsView, SIGNAL(markPressed()), this, SLOT(toggleMarkCurrentImage()));
+    connect(ui->graphicsView, SIGNAL(copyMarkedPressed()), this, SLOT(copyMarkedImages()));
     //doubleclick -> fullscreen
     connect(ui->graphicsView, SIGNAL(doubleClicked()), this, SLOT(toggleFullscreen()));
     //display image info, update scale factor display
@@ -142,6 +144,8 @@ void MainWindow::displayImageInfo() {
     ui->label_fileSize->setText(QString::number(sizeKilobytes, 'f', 2) + " kB");
     
     ui->doubleSpinBox_scale->setValue(ui->graphicsView->getScaleFactor() * 100.0);
+
+    ui->label_marked->setText(imageHandler->getMarkedFiles().contains(imageUrl) ? "(Marked)" : "");
 }
 
 void MainWindow::openFolder() {
@@ -187,6 +191,17 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 void MainWindow::closeEvent(QCloseEvent* event) {
     CursorManager::showCursor();
+
+    QSet<QUrl> markedFiles = imageHandler->getMarkedFiles();
+    if (!markedFiles.isEmpty()) {
+        const QString numMarkedFiles = QString::number(markedFiles.size());
+        if (QMessageBox::Yes == QMessageBox::question(this,
+                                                      "There are " + numMarkedFiles + " marked files",
+                                                      "Copy " + numMarkedFiles + " marked files before closing?"))
+        {
+            copyMarkedImages();
+        }
+    }
 
     //trash handling
     if(!imageHandler->getTrashHandler()->isEmpty()) {
@@ -268,4 +283,48 @@ void MainWindow::displayHelp() {
 void MainWindow::handleMultipleDropped(QList<QUrl> urls) {
     imageHandler->setFileQueue(urls);
     imageHandler->loadImage(urls.at(0));
+}
+
+void MainWindow::toggleMarkCurrentImage() {
+    imageHandler->toggleMarkCurrentImage();
+    displayImageInfo();
+}
+
+void MainWindow::copyMarkedImages() {
+    const QSet<QUrl> markedFiles = imageHandler->getMarkedFiles();
+
+    if (markedFiles.isEmpty()) {
+        QMessageBox msgBox;
+        msgBox.setText("There are no marked files to copy.");
+        msgBox.exec();
+        return;
+    }
+
+    const QUrl targetDirUrl = QFileDialog::getExistingDirectoryUrl(this,
+                                                                   "Select where to copy the marked images to",
+                                                                   imageHandler->getImageUrl().adjusted(QUrl::RemoveFilename));
+
+    if (targetDirUrl.isValid()) {
+        int errors = 0;
+
+        for (const QUrl &url : markedFiles) {
+            QFileInfo info(url.toLocalFile());
+
+            if (!QFile::copy(url.toLocalFile(), targetDirUrl.toLocalFile() + "/" + info.fileName())) {
+                errors++;
+            }
+        }
+
+        if (errors > 0) {
+            QMessageBox msgBox;
+            msgBox.setText("Failed to copy " + QString::number(errors) + " of " + QString::number(markedFiles.size()) + " files!");
+            msgBox.exec();
+        }
+
+        QMessageBox msgBox;
+        msgBox.setText("Copied " + QString::number(markedFiles.size() - errors) + " of " + QString::number(markedFiles.size()) + " files.");
+        msgBox.exec();
+
+        imageHandler->clearMarkedFiles();
+    }
 }

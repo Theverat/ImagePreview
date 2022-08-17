@@ -285,3 +285,11 @@ void ImageHandler::rotateCurrent() {
     view->changeImage(image);
     rotated = true;
 }
+
+void ImageHandler::toggleMarkCurrentImage() {
+    if (markedFiles.contains(imageUrl)) {
+        markedFiles.remove(imageUrl);
+    } else if (imageUrl.isValid()) {
+        markedFiles.insert(imageUrl);
+    }
+}

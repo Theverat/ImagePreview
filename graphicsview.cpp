@@ -136,6 +136,13 @@ void GraphicsView::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_Delete:
         emit deletePressed();
         break;
+    case Qt::Key_M:
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+            emit copyMarkedPressed();
+        } else {
+            emit markPressed();
+        }
+        break;
     case Qt::Key_P:
         //test if control is pressed as well
         if(QApplication::keyboardModifiers() & Qt::ControlModifier) {

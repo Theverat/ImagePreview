@@ -526,6 +526,13 @@ radius: 1.4, stop: 0 #5a84ae, stop: 1 #222);
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_marked">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

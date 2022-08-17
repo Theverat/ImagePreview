@@ -21,6 +21,8 @@ public:
     QUrl getImageUrl() const;
     void save(QString path, int quality = -1) const;
     TrashHandler* getTrashHandler();
+    QSet<QUrl> getMarkedFiles() const { return markedFiles; };
+    void clearMarkedFiles() { markedFiles.clear(); }
 
 private:
     QWidget *parent;
@@ -28,6 +30,7 @@ private:
     QImage image;
     QUrl imageUrl;
     QList<QUrl> fileQueue;
+    QSet<QUrl> markedFiles;
     QFileSystemWatcher fileSystemWatcher;
     TrashHandler trashHandler;
     bool rotated;
@@ -43,6 +46,7 @@ public slots:
     void save();
     void deleteCurrent();
     void rotateCurrent();
+    void toggleMarkCurrentImage();
     
 signals:
     void imageLoaded();

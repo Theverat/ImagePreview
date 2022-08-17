@@ -58,6 +58,8 @@ signals:
     void doubleClicked();
     void deletePressed();
     void rotatePressed();
+    void markPressed();
+    void copyMarkedPressed();
     
 private slots:
     void printPreview(QPrinter *printer);

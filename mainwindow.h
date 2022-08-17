@@ -36,6 +36,8 @@ private slots:
     void setZoom();
     void displayHelp();
     void handleMultipleDropped(QList<QUrl> urls);
+    void toggleMarkCurrentImage();
+    void copyMarkedImages();
 };
 
 #endif // MAINWINDOW_H
