@@ -14,7 +14,6 @@
 #include <QGraphicsItem>
 #include <QMimeData>
 #include <QDrag>
-#include <QDesktopWidget>
 #include <QCloseEvent>
 
 #include <iostream>
@@ -94,8 +93,9 @@ MainWindow::MainWindow(QWidget *parent) :
             int imageWidth = imageHandler->getImage().width();
             int imageHeight = imageHandler->getImage().height();
             
-            int screenWidth = QApplication::desktop()->width();
-            int screenHeight = QApplication::desktop()->height();
+            const QSize screenSize = QGuiApplication::primaryScreen()->size();
+            int screenWidth = screenSize.width();
+            int screenHeight = screenSize.height();
             
             if(imageWidth < screenWidth - 100 && imageHeight < screenHeight - 100
                     && imageWidth > 255 && imageHeight > 255) {

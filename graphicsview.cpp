@@ -1,5 +1,6 @@
 #include "graphicsview.h"
 
+#include <QFile>
 #include <QMimeData>
 #include <QDropEvent>
 #include <QApplication>
@@ -159,20 +160,16 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event) {
-    if (event->orientation() == Qt::Horizontal) {
-        event->ignore();
-        return;
-    }
-    
     const QPoint numPixels = event->pixelDelta();
+    const QPoint numDegrees = event->angleDelta() / 8;
     int delta = 0;
     double speed = 1.0;
     
     if (!numPixels.isNull()) {
         delta = numPixels.y();
         speed = std::min(1.0, std::abs(delta) * 0.01);
-    } else {
-        delta = event->delta();
+    } else if (!numDegrees.isNull()) {
+        delta = numDegrees.y();
     }
     
     if (delta > 0)
